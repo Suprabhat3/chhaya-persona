@@ -1,13 +1,10 @@
-import HeroSection from '@/component/hero';
-import HowItWorksSection from '@/component/how-it-work';
+import PersonaCards from "@/component/cardPersona";
 import Footer from '@/component/footer';
-import PersonaCards from '@/component/cardPersona';
+
 
 export default function HomePage() {
   return (
     <div className="bg-gradient-to-br from-purple-50 via-white to-pink-50">
-      <HeroSection />
-      <HowItWorksSection />
       <PersonaCards />
       <br />
       <br />
