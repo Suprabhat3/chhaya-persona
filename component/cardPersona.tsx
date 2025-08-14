@@ -1,8 +1,32 @@
+"use client";
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { MessageCircle, Sparkles, User, ArrowRight } from 'lucide-react';
 import { PERSONAS } from "@/type/personaInfo";
 
 export default function PersonaCards() {
+  const router = useRouter();
+
+  const handlePersonaSelect = (personaKey: string, persona: any) => {
+    // Store persona info in localStorage for the chat page
+    const personaData = {
+      key: personaKey,
+      name: persona.name || personaKey,
+      role: persona.role || '',
+      personality: persona.personality || '',
+      image: persona.image || '',
+      communicationStyle: persona.communicationStyle || 'Engaging and thoughtful',
+      tone: persona.tone || 'Professional yet approachable',
+      expertise: persona.expertise || 'Various fields of knowledge',
+      additionalContext: persona.additionalContext || ''
+    };
+
+    localStorage.setItem('selectedPersona', JSON.stringify(personaData));
+    
+    // Navigate to chat page
+    router.push('/chat');
+  };
+
   return (
     <div className="relative min-h-screen flex flex-col p-8">
       {/* Header */}
@@ -10,7 +34,7 @@ export default function PersonaCards() {
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
           Meet the <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Greatest Minds</span>
         </h1>
-        <p className="text-lg text-gray-600 max-w-267 mx-auto">
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
           Note: All conversations and responses on this platform are AI-generated and are not authored by the real individuals they represent. The personas are simulated for educational and entertainment purposes only.
         </p>
       </div>
@@ -24,7 +48,7 @@ export default function PersonaCards() {
           >
             {/* Image Section */}
             {persona.image && (
-              <div className="relative h-74 overflow-hidden">
+              <div className="relative h-64 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
                 <img
                   src={persona.image}
@@ -70,20 +94,22 @@ export default function PersonaCards() {
                 </div>
               </div>
 
-            {/* Action Button */}
-          <div className="p-4 pt-0">
-            <button
-              className="group relative w-full transform transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 rounded-xl overflow-hidden"
-            >
-              {/* Shadow layer */}
-              <div className="absolute inset-0 bg-black/10 rounded-xl blur-sm opacity-70 group-hover:opacity-90 transition-opacity duration-200"></div>
+              {/* Action Button */}
+              <div className="p-4 pt-0">
+                <button
+                  onClick={() => handlePersonaSelect(key, persona)}
+                  className="group relative w-full transform transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 rounded-xl overflow-hidden"
+                >
+                  {/* Shadow layer */}
+                  <div className="absolute inset-0 bg-black/10 rounded-xl blur-sm opacity-70 group-hover:opacity-90 transition-opacity duration-200"></div>
 
-              {/* Button background */}
-              <div className="relative bg-gradient-to-b from-pink-200 to-pink-300 hover:from-pink-100 hover:to-pink-200 text-gray-900 py-4 font-medium text-lg border border-pink-300/50 shadow-md text-center">
-                Start chat
+                  {/* Button background */}
+                  <div className="relative bg-gradient-to-b from-pink-200 to-pink-300 hover:from-pink-100 hover:to-pink-200 text-gray-900 py-4 font-medium text-lg border border-pink-300/50 shadow-md text-center flex items-center justify-center gap-2">
+                    <span>Start Chat</span>
+                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </div>
+                </button>
               </div>
-            </button>
-          </div>
             </div>
           </div>
         ))}

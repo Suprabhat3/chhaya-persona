@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@ai-sdk/gateway": "^1.0.4",
+    "@ai-sdk/google": "^2.0.6",
     "@ai-sdk/groq": "^2.0.5",
     "@ai-sdk/openai": "^2.0.6",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/supabase-js": "^2.55.0",
     "ai": "^5.0.8",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",

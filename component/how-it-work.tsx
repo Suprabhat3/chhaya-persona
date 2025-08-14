@@ -1,4 +1,9 @@
+"use client";
+
 import React from 'react';
+import { useRouter } from 'next/navigation';
+
+
 
 interface Step {
   title: string;
@@ -7,6 +12,7 @@ interface Step {
 }
 
 const HowItWorksSection: React.FC = () => {
+  const router = useRouter();
   const steps: Step[] = [
     {
       title: "Choose Your Persona",
@@ -70,7 +76,9 @@ const HowItWorksSection: React.FC = () => {
 
         {/* Bottom CTA */}
         <div className="text-center mt-16">
-          <button className="group relative transform transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0">
+          <button  
+          onClick={() => router.push('/persona')}
+          className="group relative transform transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0">
             <div className="absolute inset-0 bg-black/20 rounded-full transform translate-y-1 group-hover:translate-y-0.5 transition-transform duration-150"></div>
             <div className="relative bg-gradient-to-b from-pink-200 to-pink-300 hover:from-pink-150 hover:to-pink-250 text-gray-900 px-8 py-4 rounded-full font-medium text-lg border border-pink-300/50 shadow-sm">
               Start Your First Conversation
@@ -85,6 +93,7 @@ const HowItWorksSection: React.FC = () => {
       <div className="absolute bottom-40 left-20 w-24 h-24 bg-gradient-to-br from-pink-200 to-red-200 rounded-full blur-xl opacity-60"></div>
       <div className="absolute bottom-20 right-10 w-16 h-16 bg-gradient-to-br from-yellow-200 to-orange-200 rounded-full blur-xl opacity-60"></div>
     </section>
+    
   );
 };
 

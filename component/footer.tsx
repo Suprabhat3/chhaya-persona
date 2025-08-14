@@ -15,37 +15,37 @@ const Footer: React.FC = () => {
     {
       title: "Product",
       links: [
-        { name: "Features", href: "#features" },
+        { name: "Features", href: "#HowItWorksSection" },
         { name: "Personas", href: "#personas" },
-        { name: "Pricing", href: "#pricing" },
-        { name: "API", href: "#api" }
+        { name: "Pricing", href: "#support" },
+        { name: "API", href: "https://groq.com/" }
       ]
     },
     {
       title: "Company", 
       links: [
-        { name: "About", href: "#about" },
-        { name: "Blog", href: "#blog" },
-        { name: "Careers", href: "#careers" },
-        { name: "Press", href: "#press" }
+        { name: "About", href: "/" },
+        { name: "Blog", href: "https://suprabhat-genai.hashnode.dev/" },
+        { name: "Careers", href: "/" },
+        { name: "Press", href: "/" }
       ]
     },
     {
       title: "Resources",
       links: [
         { name: "Documentation", href: "#docs" },
-        { name: "Help Center", href: "#help" },
-        { name: "Community", href: "#community" },
-        { name: "Contact", href: "#contact" }
+        { name: "Help Center", href: "/help" },
+        { name: "Community", href: "https://discord.gg/FTQjJSJXaM" },
+        // { name: "Contact", href: "#contact" }
       ]
     },
     {
       title: "Legal",
       links: [
-        { name: "Privacy", href: "#privacy" },
-        { name: "Terms", href: "#terms" },
-        { name: "Security", href: "#security" },
-        { name: "Cookies", href: "#cookies" }
+        { name: "Privacy", href: "/privacy" },
+        { name: "Terms", href: "/terms" },
+        { name: "Feedback", href: "https://docs.google.com/forms/d/e/1FAIpQLSdwIl_UlPxekslx2WQGzYuV4Gg19fmRlbTsXoNQfT1ZUtu1-A/viewform?usp=dialog" },
+        // { name: "Cookies", href: "#cookies" }
       ]
     }
   ];
@@ -71,7 +71,7 @@ const Footer: React.FC = () => {
               <span className="text-2xl font-bold">Chhaya Persona</span>
             </div>
             <p className="text-gray-600 mb-6 leading-relaxed">
-              Engage in meaningful conversations with history's greatest minds, 
+              Engage in meaningful conversations with greatest minds, 
               powered by cutting-edge AI technology that brings wisdom to life.
             </p>
             <div className="flex space-x-4">
@@ -113,7 +113,7 @@ const Footer: React.FC = () => {
           ))}
         </div>
 
-        {/* Newsletter Section */}
+        {/* Newsletter Section
         <div className="border-t border-gray-200 pt-12 mb-12">
           <div className="max-w-2xl mx-auto text-center">
             <h3 className="text-2xl font-bold mb-4">
@@ -139,7 +139,7 @@ const Footer: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Bottom Section */}
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
