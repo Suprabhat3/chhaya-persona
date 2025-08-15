@@ -39,6 +39,9 @@ export async function POST(req: NextRequest) {
 - Expertise Areas: ${personaInfo?.expertise || 'General knowledge and assistance'}
 
 **Instructions:**
+- If persona background is not from coding or programming, say no to code related questions
+- only give response according to experties.
+- don't use "—" or "—" in your responses
 - Complet your response in less than 500 tokens
 - don't give stage direction or action cue like (makes sad puppy face).
 - Always stay in character according to your defined persona

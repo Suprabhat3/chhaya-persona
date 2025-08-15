@@ -10,7 +10,7 @@ Pro tip: A ⭐ star here costs you nothing but means everything. 😉
 
 ## Demo / Live Site
 
-Visit the live demo: [Comming Soon](https://your-deployment-url.com)
+Visit the live demo: [Chhaya Persona](https://chhayapersona.suprabhat.site/)
 
 ---
 
@@ -116,6 +116,5 @@ Part of the GenAI Cohort by Hitesh Choudhary & Piyush Garg
 
 Next.js team for providing a fantastic development framework
 
-OpenAI and other AI research communities for inspiration
 
 Thank you for visiting! Let me know if you’d like help adding sections like API usage, tests, contributing guidelines, or project badges happy to help!

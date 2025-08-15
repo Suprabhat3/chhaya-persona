@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
     { name: "Portfolio", icon: <img src="social.png" alt="" />, href: "https://suprabhat.site", target: "_blank"},
     { name: "Twitter", icon: <img src="twitter.png" alt="" />, href: "https://x.com/Suprabhat_3", target: "_blank"},
     { name: "LinkedIn", icon:<img src="linkedin.png" alt="" />, href: "https://www.linkedin.com/in/suprabhatt/", target: "_blank"}, 
-    { name: "GitHub", icon: <img src="github.png" alt="" />, href: "https://github.com/Suprabhat3", target: "_blank"},
+    { name: "GitHub", icon: <img src="github.png" alt="" />, href: "https://github.com/Suprabhat3/chhaya-persona", target: "_blank"},
     { name: "Discord", icon:<img src="discord.png" alt="" />, href: "https://discord.gg/FTQjJSJXaM", target: "_blank"}
   ];
 
