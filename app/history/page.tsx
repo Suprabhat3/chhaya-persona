@@ -479,7 +479,7 @@ const HistoryPage: React.FC = () => {
               </p>
               {!searchTerm && (
                 <button
-                  onClick={() => router.push('/chat')}
+                  onClick={() => router.push('/persona')}
                   className="group relative transform transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <div className="absolute inset-0 bg-black/20 rounded-full transform translate-y-1 group-hover:translate-y-0.5 transition-transform duration-150"></div>
@@ -543,7 +543,7 @@ const HistoryPage: React.FC = () => {
         {/* Floating Action Button */}
         <div className="fixed bottom-8 right-8">
           <button
-            onClick={() => router.push('/chat')}
+            onClick={() => router.push('/persona')}
             className="group relative transform transition-all duration-150 hover:-translate-y-1 active:translate-y-0"
           >
             <div className="absolute inset-0 bg-black/20 rounded-full transform translate-y-1 group-hover:translate-y-0.5 transition-transform duration-150"></div>

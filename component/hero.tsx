@@ -274,7 +274,7 @@ const HeroSection: React.FC = () => {
         <button 
           onClick={() => {
             if (user) {
-              router.push('/chat');
+              router.push('/persona');
             } else {
               router.push('/signup');
             }

@@ -45,7 +45,6 @@ const Footer: React.FC = () => {
         { name: "Privacy", href: "/privacy" },
         { name: "Terms", href: "/terms" },
         { name: "Feedback", href: "https://docs.google.com/forms/d/e/1FAIpQLSdwIl_UlPxekslx2WQGzYuV4Gg19fmRlbTsXoNQfT1ZUtu1-A/viewform?usp=dialog" },
-        // { name: "Cookies", href: "#cookies" }
       ]
     }
   ];
@@ -113,35 +112,6 @@ const Footer: React.FC = () => {
             </div>
           ))}
         </div>
-
-        {/* Newsletter Section
-        <div className="border-t border-gray-200 pt-12 mb-12">
-          <div className="max-w-2xl mx-auto text-center">
-            <h3 className="text-2xl font-bold mb-4">
-              Stay Updated with{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
-                New Personas
-              </span>
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Get notified when we add new historical figures and features to our platform.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-6 py-3 bg-white border border-gray-300 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
-              />
-              <button className="group relative transform transition-all duration-150 hover:-translate-y-0.5">
-                <div className="absolute inset-0 bg-black/20 rounded-full transform translate-y-1 group-hover:translate-y-0.5 transition-transform duration-150"></div>
-                <div className="relative bg-gradient-to-b from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white px-8 py-3 rounded-full font-medium border border-purple-400/50 shadow-sm">
-                  Subscribe
-                </div>
-              </button>
-            </div>
-          </div>
-        </div> */}
-
         {/* Bottom Section */}
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center space-x-6 mb-4 md:mb-0">
