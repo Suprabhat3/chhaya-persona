@@ -66,7 +66,7 @@ Remember to embody this persona consistently throughout the conversation.`;
     const result = await streamText({
       model: google('gemini-2.5-flash'), // You can also use 'gemini-1.5-flash' for faster responses
       messages: allMessages,
-      temperature: 0.5,
+      temperature: 0.7,
       maxOutputTokens:1000,
     });
 
@@ -86,7 +86,7 @@ Remember to embody this persona consistently throughout the conversation.`;
             }
             
             // Add delay to slow down the stream
-            await new Promise(resolve => setTimeout(resolve, 50)); // 50ms delay per chunk
+            await new Promise(resolve => setTimeout(resolve, 150)); // 150ms delay per chunk
             
             controller.enqueue(encoder.encode(value));
           }

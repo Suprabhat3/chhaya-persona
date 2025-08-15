@@ -20,6 +20,8 @@ Visit the live demo: [Comming Soon](https://your-deployment-url.com)
 - Interactive personas powered by AI  
 - Real-time, lifelike conversations  
 - Seamless UX with optimized Next.js performance  
+- User login
+- Save your previous chats
 
 ---
 
@@ -78,7 +80,7 @@ GitHub
 [Geist font via next/font] — optimized font loading and rendering 
 GitHub
 
-Folder Structure
+<!-- Folder Structure
 lua
 Copy
 Edit
@@ -93,7 +95,7 @@ Edit
 ├── tsconfig.json
 ├── eslint.config.mjs
 ├── postcss.config.mjs
-└── ...
+└── ... -->
 Contributing
 Contributions are welcome! Please:
 
