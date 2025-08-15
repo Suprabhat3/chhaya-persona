@@ -10,7 +10,7 @@ const TermsPage = () => {
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
             Terms of Service
           </h1>
-          <p className="text-gray-600">Last updated: 20/05/2025</p>
+          <p className="text-gray-600">Last updated: 15/08/2025</p>
         </div>
 
         <div className="space-y-8">
@@ -20,7 +20,7 @@ const TermsPage = () => {
               1. Acceptance of Terms
             </h2>
             <p className="mb-4 text-gray-700">
-              By accessing and using our AI Interview Platform ("Service"), you
+              By accessing and using our Platform "Chhaya Persona", you
               accept and agree to be bound by the terms and provisions of this
               agreement. If you do not agree, please do not use this service.
             </p>
@@ -31,7 +31,7 @@ const TermsPage = () => {
             </p>
           </div>
 
-          {/* Section 2 */}
+          {/* Section 2
           <div className="bg-white rounded-2xl shadow p-6">
             <h2 className="text-2xl font-bold text-emerald-600 mb-4">
               2. Description of Service
@@ -48,7 +48,7 @@ const TermsPage = () => {
               We reserve the right to modify, suspend, or discontinue the service
               at any time with or without notice.
             </p>
-          </div>
+          </div> */}
 
           {/* Section 3 */}
           <div className="bg-white rounded-2xl shadow p-6">
@@ -99,7 +99,7 @@ const TermsPage = () => {
             </p>
           </div>
 
-          {/* Section 6 */}
+          {/* Section 6
           <div className="bg-white rounded-2xl shadow p-6">
             <h2 className="text-2xl font-bold text-emerald-600 mb-4">
               6. Payment and Subscription Terms
@@ -111,7 +111,7 @@ const TermsPage = () => {
               <li>Fees may change with 30 days’ notice</li>
               <li>Accounts may be suspended for non-payment</li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Section 7 */}
           <div className="bg-white rounded-2xl shadow p-6">

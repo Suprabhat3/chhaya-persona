@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { FiPlus, FiSend, FiTrash2, FiMessageSquare, FiUser, FiCopy, FiCheck, FiArrowLeft, FiClock, FiMenu, FiX, FiChevronLeft, FiChevronRight, FiCode } from "react-icons/fi";
+import { FiPlus, FiSend, FiTrash2, FiMessageSquare, FiUser, FiCopy, FiCheck, FiArrowLeft, FiClock, FiMenu, FiX, FiChevronLeft, FiChevronRight, FiCode, FiChevronDown } from "react-icons/fi";
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -28,6 +28,20 @@ interface PersonaData {
   expertise: string;
   additionalContext: string;
 }
+
+type ModelType = 'gemini' | 'gpt' | 'groq';
+
+interface ModelOption {
+  value: ModelType;
+  label: string;
+  description: string;
+}
+
+const modelOptions: ModelOption[] = [
+  { value: 'gemini', label: 'Gemini', description: 'Google\'s advanced AI model' },
+  { value: 'gpt', label: 'GPT', description: 'OpenAI\'s powerful language model' },
+  { value: 'groq', label: 'Groq', description: 'Ultra-fast inference AI model' }
+];
 
 const CodeBlockWithCopy: React.FC<{ code: string; language: string; className?: string }> = ({ code, language, className }) => {
   const [copied, setCopied] = useState(false);
@@ -176,6 +190,54 @@ const MessageCopyButton: React.FC<{ text: string; isAssistant: boolean }> = ({ t
   );
 };
 
+/* ---------- ModelSelector ---------- */
+const ModelSelector: React.FC<{ selectedModel: ModelType; onModelChange: (model: ModelType) => void }> = ({ 
+  selectedModel, 
+  onModelChange 
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const selectedOption = modelOptions.find(option => option.value === selectedModel)!;
+  
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-lg hover:bg-white transition-colors text-sm"
+      >
+        <span className="font-medium text-gray-700">{selectedOption.label}</span>
+        <FiChevronDown size={16} className={`text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      
+      {isOpen && (
+        <>
+          <div 
+            className="fixed inset-0 z-10" 
+            onClick={() => setIsOpen(false)}
+          />
+          <div className="absolute top-full right-0 mt-1 w-64 bg-white rounded-lg border border-purple-200 shadow-lg z-20 overflow-hidden">
+            {modelOptions.map(option => (
+              <button
+                key={option.value}
+                onClick={() => {
+                  onModelChange(option.value);
+                  setIsOpen(false);
+                }}
+                className={`w-full text-left px-4 py-3 hover:bg-purple-50 transition-colors ${
+                  selectedModel === option.value ? 'bg-purple-100 border-l-4 border-purple-500' : ''
+                }`}
+              >
+                <div className="font-medium text-gray-800">{option.label}</div>
+                <div className="text-xs text-gray-600 mt-0.5">{option.description}</div>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 /* ---------- Main ChatApp ---------- */
 const ChatApp: React.FC = () => {
   const router = useRouter();
@@ -186,6 +248,7 @@ const ChatApp: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState<PersonaData | null>(null);
+  const [selectedModel, setSelectedModel] = useState<ModelType>('gemini');
   const [conversations, setConversations] = useState<any[]>([]);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
@@ -225,6 +288,12 @@ const ChatApp: React.FC = () => {
     const stored = localStorage.getItem('selectedPersona');
     if (stored) {
       try { setSelectedPersona(JSON.parse(stored)); } catch { /* ignore */ }
+    }
+    
+    // Load selected model from localStorage
+    const storedModel = localStorage.getItem('selectedModel') as ModelType;
+    if (storedModel && modelOptions.some(option => option.value === storedModel)) {
+      setSelectedModel(storedModel);
     }
   }, []);
 
@@ -270,6 +339,12 @@ const ChatApp: React.FC = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [user]);
+
+  /* ---- Model change handler ---- */
+  const handleModelChange = (model: ModelType) => {
+    setSelectedModel(model);
+    localStorage.setItem('selectedModel', model);
+  };
 
   /* ---- Save helpers ---- */
   const upsertConversation = async (title: string, personaKey: string) => {
@@ -324,7 +399,10 @@ const ChatApp: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/gemini", {
+      // Dynamic API endpoint based on selected model
+      const apiEndpoint = `/api/${selectedModel}`;
+      
+      const response = await fetch(apiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -423,21 +501,26 @@ const ChatApp: React.FC = () => {
           </button>
         )}
         
-        <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent truncate">
-          {selectedPersona ? selectedPersona.name : 'Chhaya Persona'}
-        </h1>
+        <div className="flex-1 flex items-center justify-center">
+          <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent truncate">
+            {selectedPersona ? selectedPersona.name : 'Chhaya Persona'}
+          </h1>
+        </div>
         
-        {/* Show persona info or login button on mobile for non-users */}
-        {!user && isMobile ? (
-          <button
-            onClick={() => router.push('/login')}
-            className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-sm font-medium"
-          >
-            Sign In
-          </button>
-        ) : (
-          <div className="w-8" />
-        )}
+        {/* Model selector and user actions */}
+        <div className="flex items-center gap-2">
+          <ModelSelector selectedModel={selectedModel} onModelChange={handleModelChange} />
+          {!user && isMobile ? (
+            <button
+              onClick={() => router.push('/login')}
+              className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-sm font-medium"
+            >
+              Sign In
+            </button>
+          ) : (
+            <div className="w-2" />
+          )}
+        </div>
       </div>
 
       <div className="flex flex-1 min-h-0">

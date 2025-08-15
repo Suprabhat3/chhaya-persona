@@ -65,7 +65,7 @@ Remember to embody this persona consistently throughout the conversation.`;
     const allMessages = [systemMessage, ...messages];
 
     const result = await streamText({
-      model: groq('llama3-70b-8192'),
+      model: groq('moonshotai/kimi-k2-instruct'),
       messages: allMessages,
       temperature: 0.7,
       maxOutputTokens: 1000,
