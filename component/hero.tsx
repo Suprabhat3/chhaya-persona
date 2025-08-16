@@ -22,7 +22,9 @@ const HeroSection: React.FC = () => {
   const { user, loading, signOut } = useAuth();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   
   const users: User[] = [
     { id: 1, name: 'User 1', avatar: '/hiteshchoudhary.png'},
@@ -65,6 +67,9 @@ const HeroSection: React.FC = () => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setShowMobileMenu(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -92,6 +97,11 @@ const HeroSection: React.FC = () => {
   const handleViewProfile = () => {
     setShowDropdown(false);
     router.push('/profile');
+  };
+
+  const handleMobileMenuClick = (action: () => void) => {
+    action();
+    setShowMobileMenu(false);
   };
 
   // Generate user initials for avatar
@@ -127,9 +137,11 @@ const HeroSection: React.FC = () => {
           <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
             <span><img src="/favicon.ico" alt="Logo" className="rounded" /></span>
           </div>
-          <span className="hidden md:inline-block text-xl font-bold text-gray-900">Chhaya Persona</span>
+          <span className="md:inline-block text-xl font-bold text-gray-900">Chhaya Persona</span>
         </div>
-        <div className="flex items-center space-x-4">
+        
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-4">
           {loading ? (
             // Loading state
             <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
@@ -151,7 +163,7 @@ const HeroSection: React.FC = () => {
                     {getUserInitials()}
                   </div>
                 )}
-                <div className="hidden md:block text-left">
+                <div className="text-left">
                   <p className="text-sm font-medium text-gray-900">{getDisplayName()}</p>
                   <p className="text-xs text-gray-500">{user.email}</p>
                 </div>
@@ -167,7 +179,7 @@ const HeroSection: React.FC = () => {
                 </svg>
               </button>
 
-              {/* Dropdown Menu */}
+              {/* Desktop Dropdown Menu */}
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
                   {/* User Info */}
@@ -229,7 +241,7 @@ const HeroSection: React.FC = () => {
               )}
             </div>
           ) : (
-            // Not logged in - show auth buttons
+            // Not logged in - show auth buttons (desktop only)
             <>
               <button
                 onClick={() => router.push('/signup')}
@@ -252,6 +264,154 @@ const HeroSection: React.FC = () => {
                 Try Demo
               </button>
             </>
+          )}
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className="md:hidden flex items-center space-x-4">
+          {loading ? (
+            // Loading state
+            <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+          ) : user ? (
+            // Logged in user - show profile avatar only
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="flex items-center p-1 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+              >
+                {userProfile?.avatar_url ? (
+                  <img
+                    src={userProfile.avatar_url}
+                    alt={getDisplayName()}
+                    className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-medium text-sm border-2 border-gray-200">
+                    {getUserInitials()}
+                  </div>
+                )}
+              </button>
+
+              {/* Mobile User Dropdown */}
+              {showDropdown && (
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                  {/* User Info */}
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <div className="flex items-center space-x-3">
+                      {userProfile?.avatar_url ? (
+                        <img
+                          src={userProfile.avatar_url}
+                          alt={getDisplayName()}
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-medium">
+                          {getUserInitials()}
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-medium text-gray-900">{getDisplayName()}</p>
+                        <p className="text-sm text-gray-500">{user.email}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
+                  <div className="py-2">
+                    <button
+                      onClick={handleViewProfile}
+                      className="w-full flex items-center px-4 py-3 text-left text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <svg className="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      View Profile
+                    </button>
+                    
+                    <button
+                      onClick={handleViewHistory}
+                      className="w-full flex items-center px-4 py-3 text-left text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <svg className="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Chat History
+                    </button>
+
+                    <hr className="my-2 border-gray-100" />
+                    
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center px-4 py-3 text-left text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            // Not logged in - show hamburger menu
+            <div className="relative" ref={mobileMenuRef}>
+              <button
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                className="p-2 rounded-md hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                aria-label="Menu"
+              >
+                <svg
+                  className={`w-6 h-6 text-gray-600 transition-transform duration-200 ${
+                    showMobileMenu ? 'rotate-90' : ''
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  {showMobileMenu ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+
+              {/* Mobile Menu */}
+              {showMobileMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                  <button
+                    onClick={() => handleMobileMenuClick(() => router.push('/signup'))}
+                    className="w-full flex items-center px-4 py-3 text-left text-gray-700 hover:bg-purple-50 transition-colors"
+                  >
+                    <svg className="w-5 h-5 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                    Sign up
+                  </button>
+                  
+                  <button
+                    onClick={() => handleMobileMenuClick(() => router.push('/login'))}
+                    className="w-full flex items-center px-4 py-3 text-left text-gray-700 hover:bg-green-50 transition-colors"
+                  >
+                    <svg className="w-5 h-5 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    Log in
+                  </button>
+
+                  <button
+                    onClick={() => handleMobileMenuClick(() => router.push('/persona'))}
+                    className="w-full flex items-center px-4 py-3 text-left text-gray-700 hover:bg-sky-50 transition-colors"
+                  >
+                    <svg className="w-5 h-5 mr-3 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Try Demo
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </header>
