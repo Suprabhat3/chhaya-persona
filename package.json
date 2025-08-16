@@ -13,6 +13,7 @@
     "@ai-sdk/google": "^2.0.6",
     "@ai-sdk/groq": "^2.0.5",
     "@ai-sdk/openai": "^2.0.6",
+    "@openrouter/ai-sdk-provider": "^1.1.2",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.55.0",
     "ai": "^5.0.8",
