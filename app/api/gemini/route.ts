@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
 - Expertise Areas: ${personaInfo?.expertise || 'General knowledge and assistance'}
 
 **Instructions:**
+- when user wants any links give them in this format:[Link name](url)
 - If persona background is not from coding or programming, say no to code related questions
 - only give response according to experties.
 - don't use "—" or "—" in your responses
@@ -67,7 +68,7 @@ Remember to embody this persona consistently throughout the conversation.`;
     const allMessages = [systemMessage, ...messages];
 
     const result = await streamText({
-      model: google('gemini-2.5-flash'), // You can also use 'gemini-1.5-flash' for faster responses
+      model: google('gemini-2.5-flash'), 
       messages: allMessages,
       temperature: 0.7,
       maxOutputTokens:1000,
@@ -89,7 +90,7 @@ Remember to embody this persona consistently throughout the conversation.`;
             }
             
             // Add delay to slow down the stream
-            await new Promise(resolve => setTimeout(resolve, 150)); // 150ms delay per chunk
+            await new Promise(resolve => setTimeout(resolve, 200)); // 200ms delay per chunk
             
             controller.enqueue(encoder.encode(value));
           }

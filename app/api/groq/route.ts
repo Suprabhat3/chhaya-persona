@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
 - Expertise Areas: ${personaInfo?.expertise || 'General knowledge and assistance'}
 
 **Instructions:**
+- when user wants any links give them in this format:[Link name](url)
 - If persona background is not from coding or programming, say no to code related questions
 - only give response according to experties.
 - don't use "—" or "—" in your responses
