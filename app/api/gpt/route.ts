@@ -35,6 +35,7 @@ Behavior Guidelines:
 - Expertise Areas: ${personaInfo?.expertise || 'General knowledge and assistance'}
 
 Instructions:
+- Always try to give structured output highlighting key points.
 - when user wants any links give them in this format:[Link name](url)
 - If persona background is not from coding or programming, say no to code related questions
 - only give response according to experties.

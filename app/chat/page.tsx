@@ -365,71 +365,77 @@ const ChatApp: React.FC = () => {
   };
 
   /* ---- Send message ---- */
-  const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim() || isLoading || !selectedPersona) return;
+const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
+  e.preventDefault();
+  if (!inputValue.trim() || isLoading || !selectedPersona) return;
 
-    if (!user && isLimitReached) {
-      router.push('/login');
-      return;
-    }
+  // Check limit BEFORE processing
+  if (!user && isLimitReached) {
+    router.push('/login');
+    return;
+  }
+    if (!user) {
+    incrementChatCount();
+  }
 
     const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: inputValue };
     setMessages(prev => [...prev, userMsg]);
 
-    if (!user) {
-      incrementChatCount();
-    }
+  let convId = activeConversationId;
+  if (!convId && user) {
+    convId = await upsertConversation(inputValue.slice(0, 50), selectedPersona.key);
+    if (!convId) return;
+    setActiveConversationId(convId);
+    setConversations(prev => [{ id: convId, title: inputValue.slice(0, 50), persona_key: selectedPersona.key, created_at: new Date().toISOString() }, ...prev]);
+  }
+  
+  if (convId) {
+    await saveMessage(convId, "user", inputValue);
+  }
 
-    let convId = activeConversationId;
-    if (!convId && user) {
-      convId = await upsertConversation(inputValue.slice(0, 50), selectedPersona.key);
-      if (!convId) return;
-      setActiveConversationId(convId);
-      setConversations(prev => [{ id: convId, title: inputValue.slice(0, 50), persona_key: selectedPersona.key, created_at: new Date().toISOString() }, ...prev]);
+  const assistantMsg: Message = { id: crypto.randomUUID(), role: "assistant", content: "" };
+  setMessages(prev => [...prev, assistantMsg]);
+  
+  // Clear input immediately for better UX
+  setInputValue("");
+  setIsLoading(true);
+
+  try {
+    // Dynamic API endpoint based on selected model
+    const apiEndpoint = `/api/${selectedModel}`;
+    
+    const response = await fetch(apiEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [...messages, userMsg].map(m => ({ role: m.role, content: m.content })),
+        personaInfo: selectedPersona,
+      }),
+    });
+    
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
+    const reader = response.body!.getReader();
+    const decoder = new TextDecoder();
+    let acc = "";
+    
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      acc += decoder.decode(value, { stream: true });
+      setMessages(prev => prev.map(m => m.id === assistantMsg.id ? { ...m, content: acc } : m));
     }
     
     if (convId) {
-      await saveMessage(convId, "user", inputValue);
+      await saveMessage(convId, "assistant", acc);
     }
-
-    const assistantMsg: Message = { id: crypto.randomUUID(), role: "assistant", content: "" };
-    setMessages(prev => [...prev, assistantMsg]);
-    setInputValue("");
-    setIsLoading(true);
-
-    try {
-      // Dynamic API endpoint based on selected model
-      const apiEndpoint = `/api/${selectedModel}`;
-      
-      const response = await fetch(apiEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [...messages, userMsg].map(m => ({ role: m.role, content: m.content })),
-          personaInfo: selectedPersona,
-        }),
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const reader = response.body!.getReader();
-      const decoder = new TextDecoder();
-      let acc = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        acc += decoder.decode(value, { stream: true });
-        setMessages(prev => prev.map(m => m.id === assistantMsg.id ? { ...m, content: acc } : m));
-      }
-      if (convId) {
-        await saveMessage(convId, "assistant", acc);
-      }
-    } catch (err) {
-      console.error(err);
-      setMessages(prev => prev.map(m => m.id === assistantMsg.id ? { ...m, content: "Sorry, something went wrong." } : m));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  } catch (err) {
+    console.error(err);
+    setMessages(prev => prev.map(m => m.id === assistantMsg.id ? { ...m, content: "Sorry, something went wrong." } : m));
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   /* ---- UI helpers ---- */
   const handleNewChat = async () => {
@@ -790,22 +796,30 @@ const ChatApp: React.FC = () => {
   <div className="border-t border-purple-100 bg-white/50 backdrop-blur-sm p-4 md:p-6">
     <div className="max-w-4xl mx-auto flex gap-3 md:gap-4">
       <div className="flex-1 relative">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") handleSendMessage(e); }}
-          placeholder={selectedPersona ? `Chat with ${selectedPersona.name}...` : "What's in your mind?..."}
-          disabled={isLoading || (!user && isLimitReached)}
-          className="w-full text-gray-800 border border-purple-200 rounded-2xl px-4 py-3 md:px-6 md:py-4 pr-12 md:pr-14 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 bg-white/80 backdrop-blur-sm shadow-sm placeholder-gray-500"
-        />
-        <button
-          onClick={handleSendMessage}
-          disabled={!inputValue.trim() || isLoading || (!user && isLimitReached)}
-          className={`absolute right-2 md:right-3 top-2 w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${inputValue.trim() && !isLoading && (user || !isLimitReached) ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
-        >
-          <FiSend size={16} className="md:text-base" />
-        </button>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => { 
+                if (e.key === "Enter" && !isLoading && (user || !isLimitReached)) {
+                  handleSendMessage(e); 
+                }
+              }}
+              placeholder={selectedPersona ? `Chat with ${selectedPersona.name}...` : "What's in your mind?..."}
+              disabled={isLoading || (!user && isLimitReached)}
+              className="w-full text-gray-800 border border-purple-200 rounded-2xl px-4 py-3 md:px-6 md:py-4 pr-12 md:pr-14 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 bg-white/80 backdrop-blur-sm shadow-sm placeholder-gray-500"
+            />
+          <button
+            onClick={handleSendMessage}
+            disabled={!inputValue.trim() || isLoading || (!user && isLimitReached)}
+            className={`absolute right-2 md:right-3 top-2 w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${
+              inputValue.trim() && !isLoading && (user || !isLimitReached) 
+                ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105" 
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            <FiSend size={16} className="md:text-base" />
+          </button>
       </div>
     </div>
     
