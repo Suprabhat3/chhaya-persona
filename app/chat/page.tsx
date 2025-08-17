@@ -516,21 +516,13 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
         </div>
         
         {/* Model selector and user actions */}
-        <div className="flex items-center gap-2">
-          <ModelSelector selectedModel={selectedModel} onModelChange={handleModelChange} />
-          {!user && isMobile ? (
-            <button
-              onClick={() => router.push('/login')}
-              className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-sm font-medium"
-            >
-              Sign In
-            </button>
-          ) : (
-            <div className="w-2" />
-          )}
-        </div>
+      <div className="flex items-center gap-2">
+        <ModelSelector 
+          selectedModel={selectedModel} 
+          onModelChange={handleModelChange} 
+        />
       </div>
-
+      </div>
       <div className="flex flex-1 min-h-0">
         {/* Desktop Sidebar */}
         <aside
