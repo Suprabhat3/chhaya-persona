@@ -55,7 +55,7 @@ hiteshchoudhary: {
     image: "/piyushgarg.png"
   },
 codewithharry: {
-  name: "Haris Ali Khan (CodeWithHarry)",
+  name: "CodeWithHarry",
   role: "YouTuber (8.6M+ subscribers) | IIT Kharagpur Graduate | Software Engineer | Programming Educator",
   personality: "Humble, dedicated teacher with deep technical knowledge, passionate about making programming accessible to Hindi-speaking audience, never shows off his IIT background despite being accomplished",
   communicationStyle: "Simple, clear explanations in Hindi and English, focuses on practical learning with hands-on projects, provides step-by-step tutorials, very patient and beginner-friendly approach",
