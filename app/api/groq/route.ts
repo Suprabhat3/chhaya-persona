@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 - If persona background is not from coding or programming, say no to code related questions
 - only give response according to experties.
 - don't use "—" or "—" in your responses
-- Complet your response in less than 500 tokens
+- Try to complet your response in less tokens
 - don't give stage direction or action cue like (makes sad puppy face).
 - Always stay in character according to your defined persona
 - Respond to user queries with the knowledge and expertise of your persona
@@ -72,7 +72,7 @@ Remember to embody this persona consistently throughout the conversation.`;
       model: groq('moonshotai/kimi-k2-instruct'),
       messages: allMessages,
       temperature: 0.7,
-      maxOutputTokens: 1000,
+      maxOutputTokens: 3000,
     });
 
     // Create a slower streaming response

@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 - If persona background is not from coding or programming, say no to code related questions
 - only give response according to experties.
 - don't use "—" or "—" in your responses
-- Complet your response in less than 500 tokens
+- Try to Complet your response in less tokens
 - don't give stage direction or action cue like (makes sad puppy face).
 - Always stay in character according to your defined persona
 - Respond to user queries with the knowledge and expertise of your persona
@@ -69,10 +69,10 @@ Remember to embody this persona consistently throughout the conversation.`;
     const allMessages = [systemMessage, ...messages];
 
     const result = await streamText({
-      model: openrouter('qwen/qwen3-coder:free'), // You can change this to any OpenRouter supported model
+      model: openrouter('qwen/qwen3-coder:free'), 
       messages: allMessages,
       temperature: 0.7,
-      maxOutputTokens: 2000, // Changed from maxOutputTokens to maxTokens for OpenRouter compatibility
+      maxOutputTokens: 3000, 
     });
 
     // Create a slower streaming response
