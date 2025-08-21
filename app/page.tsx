@@ -3,6 +3,7 @@ import HowItWorksSection from '@/component/how-it-work';
 import Footer from '@/component/footer';
 import PersonaCards from '@/component/cardPersona';
 import SupportMyWorkSection from '@/component/supportMyWork';
+import OurProductsSection from '@/component/otherProduct';
 
 
 export default function HomePage() {
@@ -22,6 +23,7 @@ export default function HomePage() {
        <div id="support">
         <SupportMyWorkSection />
       </div>
+      <OurProductsSection />
       <br />
       <br />
       <Footer />

@@ -29,7 +29,7 @@ interface PersonaData {
   additionalContext: string;
 }
 
-type ModelType = 'gemini' | 'gpt' | 'groq' | 'gpt-oss' | 'qwen';
+type ModelType = 'gemini' | 'gpt' | 'groq' | 'gpt-oss' | 'qwen' | 'claude';
 
 interface ModelOption {
   value: ModelType;
@@ -42,7 +42,8 @@ const modelOptions: ModelOption[] = [
   { value: 'gpt', label: 'GPT', description: 'OpenAI\'s powerful language model' },
   { value: 'groq', label: 'Kimi K2 - good for coding', description: 'By Groq Ultra-fast inference AI model' },
   { value: 'qwen', label: 'Qwen coder', description: 'Good for coding' },
-  { value: 'gpt-oss', label: 'GPT-oss-20b', description: 'Open source' }
+  { value: 'gpt-oss', label: 'GPT-oss-20b', description: 'Open source' },
+  { value: 'claude', label: 'Claude-sonnet-4', description: 'Bekar hai bhai' }
 ];
 
 const CodeBlockWithCopy: React.FC<{ code: string; language: string; className?: string }> = ({ code, language, className }) => {
