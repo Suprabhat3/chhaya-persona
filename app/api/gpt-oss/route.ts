@@ -1,9 +1,9 @@
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { createGroq } from '@ai-sdk/groq';
 import { streamText } from 'ai';
 import { NextRequest } from 'next/server';
 
-const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY, // Make sure to set this in your environment variables
+const groq = createGroq({
+  apiKey: process.env.GROQ_API_KEY, // Make sure to set this in your environment variables
 });
 
 export async function POST(req: NextRequest) {
@@ -39,13 +39,12 @@ export async function POST(req: NextRequest) {
 - Expertise Areas: ${personaInfo?.expertise || 'General knowledge and assistance'}
 
 **Instructions:**
-- don't try to give respnse in table format
-- don't use "—" in your responses
-- you can only write in English, but use other language like Hinglish(but wirte like that - mere name ye hai etc).
+- do not write any thing in hindi or any other language except english, use hinglish instead of hindi
 - when user wants any links give them in this format:[Link name](url)
 - If persona background is not from coding or programming, say no to code related questions
 - only give response according to experties.
-- Complet your response in less than 500 tokens
+- don't use "—" or "—" in your responses
+- Try to complet your response in less tokens
 - don't give stage direction or action cue like (makes sad puppy face).
 - Always stay in character according to your defined persona
 - Respond to user queries with the knowledge and expertise of your persona
@@ -70,10 +69,10 @@ Remember to embody this persona consistently throughout the conversation.`;
     const allMessages = [systemMessage, ...messages];
 
     const result = await streamText({
-      model: openrouter('openai/gpt-oss-20b:free'), // You can change this to any OpenRouter supported model
+      model: groq('openai/gpt-oss-120b'),
       messages: allMessages,
       temperature: 0.7,
-      maxOutputTokens: 1000, // Changed from maxOutputTokens to maxTokens for OpenRouter compatibility
+      maxOutputTokens: 3000,
     });
 
     // Create a slower streaming response
@@ -92,7 +91,7 @@ Remember to embody this persona consistently throughout the conversation.`;
             }
             
             // Add delay to slow down the stream
-            await new Promise(resolve => setTimeout(resolve, 40));
+            await new Promise(resolve => setTimeout(resolve, 50)); 
             
             controller.enqueue(encoder.encode(value));
           }
@@ -113,7 +112,7 @@ Remember to embody this persona consistently throughout the conversation.`;
     });
 
   } catch (error: any) {
-    console.error('OpenRouter API error:', error);
+    console.error('Groq API error:', error);
     
     // Handle different types of errors
     if (error.name === 'AI_APICallError') {

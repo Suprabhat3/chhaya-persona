@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { FiPlus, FiSend, FiTrash2, FiMessageSquare, FiUser, FiCopy, FiCheck, FiArrowLeft, FiClock, FiMenu, FiX, FiChevronLeft, FiChevronRight, FiCode, FiChevronDown } from "react-icons/fi";
+import { FiPlus, FiSend, FiTrash2, FiMessageSquare, FiUser, FiCopy, FiCheck, FiArrowLeft, FiClock, FiMenu, FiX, FiChevronLeft, FiChevronRight, FiCode, FiChevronDown, FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -29,7 +29,7 @@ interface PersonaData {
   additionalContext: string;
 }
 
-type ModelType = 'gemini' | 'gpt' | 'groq' | 'gpt-oss' | 'qwen' | 'claude';
+type ModelType = 'gemini' | 'groq' | 'gpt-oss' | 'qwen' | 'claude';
 
 interface ModelOption {
   value: ModelType;
@@ -39,11 +39,10 @@ interface ModelOption {
 
 const modelOptions: ModelOption[] = [
   { value: 'gemini', label: 'Gemini', description: 'Google\'s advanced AI model' },
-  { value: 'gpt', label: 'GPT', description: 'OpenAI\'s powerful language model' },
-  { value: 'groq', label: 'Kimi K2 - good for coding', description: 'By Groq Ultra-fast inference AI model' },
-  { value: 'qwen', label: 'Qwen coder', description: 'Good for coding' },
-  { value: 'gpt-oss', label: 'GPT-oss-20b', description: 'Open source' },
-  { value: 'claude', label: 'Claude-sonnet-4', description: 'Bekar hai bhai' }
+  { value: 'gpt-oss', label: 'GPT-oss-120b', description: 'Open source' },
+  { value: 'groq', label: 'Kimi K2', description: 'Good for coding - chinese model hai' },
+  { value: 'qwen', label: 'Qwen coder', description: 'Good for coding - chinese model hai' },
+  { value: 'claude', label: 'Claude-sonnet-4', description: 'Name toh suna hoga' }
 ];
 
 const CodeBlockWithCopy: React.FC<{ code: string; language: string; className?: string }> = ({ code, language, className }) => {
@@ -248,8 +247,15 @@ const ChatApp: React.FC = () => {
   const { remainingChats, isLimitReached, incrementChatCount, resetChatCount } = useChatLimit();
   
   const [messages, setMessages] = useState<Message[]>([]);
-  const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  // Like/dislike state: { [messageId]: 'like' | 'dislike' | null }
+  const [feedback, setFeedback] = useState<{ [id: string]: 'like' | 'dislike' | null }>({});
+  const [inputValue, setInputValue] = useState("");
+  // Word count helper
+  const getWordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
+  const wordCount = getWordCount(inputValue);
+  const maxWords = 300;
+
   const [selectedPersona, setSelectedPersona] = useState<PersonaData | null>(null);
   const [selectedModel, setSelectedModel] = useState<ModelType>('gemini');
   const [conversations, setConversations] = useState<any[]>([]);
@@ -510,7 +516,8 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
           </button>
         )}
         
-        <div className="flex-1 flex items-center justify-center">
+    <div
+      className="flex-1 flex items-center justify-center">
           <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent truncate">
             {selectedPersona ? selectedPersona.name : 'Chhaya Persona'}
           </h1>
@@ -538,7 +545,8 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
                   <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                     <img src="favicon.ico" alt="Logo" className="rounded" />
                   </div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent">
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent cursor-pointer"
+                  onClick={() => router.push('/')}>
                     Chhaya Persona
                   </h1>
                 </div>
@@ -559,7 +567,7 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
                 )}
               </div>
 
-              <button onClick={handleNewChat} className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-4 rounded-xl mb-6 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+              <button onClick={handleNewChat} className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-4 rounded-xl mb-6 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 cursor-pointer">
                 <FiPlus className="text-lg" /> New chat
               </button>
             </div>
@@ -573,7 +581,7 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
                       <p className="text-gray-700 font-semibold">Conversations</p>
                     </div>
                   </div>
-                  <div className="overflow-y-auto flex-1 min-h-0">
+                  <div className="overflow-y-auto flex-1 min-h-0 max-h-[45vh] pr-1">
                     <ul className="space-y-2 pb-6">
                       {conversations.map(c => (
                         <li
@@ -593,8 +601,7 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
                     </ul>
                   </div>
                 </div>
-
-                <div className="p-6 border-t border-purple-100 flex-shrink-0">
+                <div className="pb-4 pr-2 pl-2 border-purple-500 flex-shrink-0">
                   <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4 border border-green-100">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
@@ -770,8 +777,29 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
         </div>
       )}
       {msg.content && (
-        <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mt-2`}>
+        <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mt-2 items-center gap-2`}>
           <MessageCopyButton text={msg.content} isAssistant={msg.role === "assistant"} />
+          {/* Like/Dislike buttons for assistant messages */}
+          {msg.role === "assistant" && (
+            <div className="flex gap-1 ml-2">
+              <button
+                aria-label="Like"
+                className={`p-1 rounded-full border ${feedback[msg.id] === 'like' ? 'bg-green-100 border-green-400 text-green-600' : 'bg-gray-100 text-gray-400'} hover:bg-green-50 transition-colors`}
+                onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id] === 'like' ? null : 'like' }))
+}
+              >
+                <FiThumbsUp size={16} />
+              </button>
+              <button
+                aria-label="Dislike"
+                className={`p-1 rounded-full border ${feedback[msg.id] === 'dislike' ? 'bg-red-100 border-red-400 text-red-600' : 'bg-gray-100 border-gray-300 text-gray-400'} hover:bg-red-50 transition-colors`}
+                onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id] === 'dislike' ? null : 'dislike' }))
+}
+              >
+                <FiThumbsDown size={16} />
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -794,21 +822,36 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
             <input
               type="text"
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) => {
+                setInputValue(e.target.value);
+              }}
               onKeyDown={(e) => { 
                 if (e.key === "Enter" && !isLoading && (user || !isLimitReached)) {
-                  handleSendMessage(e); 
+                  if (wordCount <= maxWords) {
+                    handleSendMessage(e); 
+                  }
                 }
               }}
-              placeholder={selectedPersona ? `Chat with ${selectedPersona.name}...` : "What's in your mind?..."}
+              placeholder={selectedPersona ? `Chat with ${selectedPersona.name}...` : "What's in your mind?..."
+}
               disabled={isLoading || (!user && isLimitReached)}
               className="w-full text-gray-800 border border-purple-200 rounded-2xl px-4 py-3 md:px-6 md:py-4 pr-12 md:pr-14 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 bg-white/80 backdrop-blur-sm shadow-sm placeholder-gray-500"
             />
+          {/* Show error only if word count exceeds maxWords */}
+          {wordCount > maxWords && (
+            <div className="absolute left-0 -bottom-6 text-xs text-red-600 select-none">
+              Max limit is 300 words
+            </div>
+          )}
           <button
-            onClick={handleSendMessage}
-            disabled={!inputValue.trim() || isLoading || (!user && isLimitReached)}
+            onClick={(e) => {
+              if (wordCount <= maxWords) {
+                handleSendMessage(e);
+              }
+            }}
+            disabled={!inputValue.trim() || isLoading || (!user && isLimitReached) || wordCount > maxWords}
             className={`absolute right-2 md:right-3 top-2 w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${
-              inputValue.trim() && !isLoading && (user || !isLimitReached) 
+              inputValue.trim() && !isLoading && (user || !isLimitReached) && wordCount <= maxWords
                 ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105" 
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}

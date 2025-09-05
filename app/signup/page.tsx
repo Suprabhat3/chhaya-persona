@@ -107,7 +107,7 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full relative bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center py-12">
+    <div className="min-h-screen w-full relative bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center py-15">
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -116,7 +116,6 @@ const SignupPage: React.FC = () => {
           `,
         }}
       />
-
       {/* Decorative Elements */}
       <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-xl opacity-60"></div>
       <div className="absolute top-40 right-20 w-32 h-32 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-xl opacity-60"></div>
@@ -140,7 +139,7 @@ const SignupPage: React.FC = () => {
       </header>
 
       {/* Main Signup Form */}
-      <div className="relative z-10 w-full max-w-lg mx-4">
+      <div className="relative z-10 w-full max-w-lg mx-4 pt-5">
         <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/30">
           {/* Form Header */}
           <div className="text-center mb-8">
@@ -151,10 +150,9 @@ const SignupPage: React.FC = () => {
               </span>
             </h1>
             <p className="text-gray-600">
-              Start conversations with history's greatest minds today
+             Sign up to continue your conversations
             </p>
           </div>
-
           {/* Error/Success Messages */}
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
@@ -192,7 +190,7 @@ const SignupPage: React.FC = () => {
           {/* Divider */}
           <div className="relative flex items-center justify-center my-6">
             <div className="border-t border-gray-200 w-full"></div>
-            <span className="bg-white px-4 text-sm text-gray-500">or</span>
+            <span className="bg-white px-4 text-sm text-gray-500 absolute">or</span>
           </div>
 
           {/* Email Signup Form */}

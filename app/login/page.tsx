@@ -144,7 +144,7 @@ function LoginContent() {
       </header>
 
       {/* Main Login Form */}
-      <div className="relative z-10 w-full max-w-lg mx-4">
+      <div className="relative z-10 w-full max-w-md mx-4">
         <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/30">
           {!showForgotPassword ? (
             <>
@@ -157,7 +157,7 @@ function LoginContent() {
                   </span>
                 </h1>
                 <p className="text-gray-600">
-                  Sign in to continue your conversations
+                  login in to continue your conversations
                 </p>
               </div>
 
@@ -207,11 +207,11 @@ function LoginContent() {
                 </span>
               </button>
 
-              {/* Divider */}
-              <div className="relative flex items-center justify-center my-6">
-                <div className="border-t border-gray-200 w-full"></div>
-                <span className="bg-white px-4 text-sm text-gray-500">or</span>
-              </div>
+          {/* Divider */}
+          <div className="relative flex items-center justify-center my-6">
+            <div className="border-t border-gray-200 w-full"></div>
+            <span className="bg-white px-4 text-sm text-gray-500 absolute">or</span>
+          </div>
 
               {/* Email Login Form */}
               <form onSubmit={handleEmailLogin} className="space-y-5">
