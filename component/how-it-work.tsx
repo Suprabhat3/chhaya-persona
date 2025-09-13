@@ -16,7 +16,7 @@ const HowItWorksSection: React.FC = () => {
   const steps: Step[] = [
     {
       title: "Choose Your Persona",
-      description: "Select from our collection of historical figures, innovators, and thought leaders to start your conversation.",
+      description: "Select from our collection of your favraite personalities, innovators, and thought leaders to start your conversation.",
       icon: "👤"
     },
     {
@@ -26,7 +26,7 @@ const HowItWorksSection: React.FC = () => {
     },
     {
       title: "Gain New Insights",
-      description: "Discover unique perspectives and wisdom from the greatest minds in history, powered by cutting-edge AI technology.",
+      description: "Discover unique perspectives and wisdom from the your favraite personalities, powered by cutting-edge AI technology.",
       icon: "💡"
     }
   ];
@@ -43,7 +43,7 @@ const HowItWorksSection: React.FC = () => {
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Experience conversations with history's greatest minds in just three simple steps
+            Experience conversations with your favraite personalities, powered by advanced AI technology.
           </p>
         </div>
 

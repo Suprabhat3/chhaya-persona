@@ -306,16 +306,17 @@ const ChatApp: React.FC = () => {
     }
   }, []);
 
+  // On first mount, always start a new chat (clear messages and conversation)
   useEffect(() => {
     (async () => {
       if (!user) return;
       await loadConversations(user.id);
-      if (conversations.length > 0) {
-        setActiveConversationId(conversations[0].id);
-        await loadMessages(conversations[0].id);
-      }
+      setActiveConversationId(null);
+      setMessages([]);
     })();
-  }, [user, loadConversations, loadMessages]);
+    // Only run on mount (user or loadConversations change)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loadConversations]);
 
   useEffect(() => {
     if (user) {
@@ -602,7 +603,7 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
                   </div>
                 </div>
                 <div className="pb-4 pr-2 pl-2 border-purple-500 flex-shrink-0">
-                  <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4 border border-green-100">
+                  <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-4 border border-green-300">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
                         <FiUser className="text-white text-sm" />
@@ -617,7 +618,7 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
                     <p className="text-xs text-gray-600 mb-3">Unlimited chats & history</p>
                     <button
                       onClick={handleSignOut}
-                      className="w-full bg-white hover:bg-gray-50 text-gray-700 py-2 px-3 rounded-lg text-xs font-medium transition-colors border border-gray-200"
+                      className="w-full bg-green-400 hover:bg-green-200 text-gray-800 py-2 px-3 rounded-lg text-xs font-medium transition-colors border border-gray-200"
                     >
                       Sign Out
                     </button>
@@ -696,7 +697,7 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
                   ))}
                 </div>
 
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-3 border border-green-100">
+                <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-3 border border-green-300">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
                       <FiUser className="text-white text-sm" />

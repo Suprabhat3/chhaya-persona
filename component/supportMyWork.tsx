@@ -37,7 +37,7 @@ const SupportMyWorkSection: React.FC = () => {
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            If you enjoy chatting with greatest minds and find value in this AI-powered experience, 
+            If you enjoy chatting with your favraite personalities and find value in this AI-powered experience, 
             consider supporting the continued development of Chhaya Persona
           </p>
           <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full border border-purple-200/50">
