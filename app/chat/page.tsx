@@ -306,13 +306,15 @@ const ChatApp: React.FC = () => {
     }
   }, []);
 
-  // On first mount, always start a new chat (clear messages and conversation)
+  // On first mount, load conversations but don't clear messages unless necessary
   useEffect(() => {
     (async () => {
       if (!user) return;
       await loadConversations(user.id);
-      setActiveConversationId(null);
-      setMessages([]);
+      // Only clear messages if there's no active conversation
+      if (!activeConversationId) {
+        setMessages([]);
+      }
     })();
     // Only run on mount (user or loadConversations change)
     // eslint-disable-next-line react-hooks/exhaustive-deps
