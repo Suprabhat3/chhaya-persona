@@ -96,56 +96,103 @@ const CodeBlockWithCopy: React.FC<{
     }
   };
 
+  // Format language name for display
+  const getLanguageDisplayName = (lang: string) => {
+    const languageMap: { [key: string]: string } = {
+      javascript: "JavaScript",
+      typescript: "TypeScript",
+      python: "Python",
+      jsx: "JSX",
+      tsx: "TSX",
+      css: "CSS",
+      html: "HTML",
+      json: "JSON",
+      bash: "Bash",
+      sql: "SQL",
+      java: "Java",
+      cpp: "C++",
+      c: "C",
+      go: "Go",
+      rust: "Rust",
+      php: "PHP",
+      ruby: "Ruby",
+      swift: "Swift",
+      kotlin: "Kotlin",
+    };
+    return languageMap[lang.toLowerCase()] || lang.toUpperCase();
+  };
+
   return (
     <div
-      className="relative group w-full my-2 max-w-full overflow-x-auto bg-gray-900 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+      className="relative group w-full my-3 max-w-full overflow-hidden border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
       style={{ WebkitOverflowScrolling: "touch" }}
     >
-      <button
-        onClick={copyToClipboard}
-        className="absolute top-2 right-2 z-20 p-2 bg-cyan-400 hover:bg-cyan-300 text-black font-bold border-2 border-black transition-all flex items-center gap-1 text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
-        title="Copy code"
-      >
-        {copied ? (
-          <FiCheck size={14} strokeWidth={3} />
-        ) : (
-          <FiCopy size={14} strokeWidth={3} />
-        )}
-        <span className="hidden xs:inline text-xs uppercase">
-          {copied ? "Copied!" : "Copy"}
-        </span>
-      </button>
+      {/* VS Code-style header bar */}
+      <div className="flex items-center justify-between bg-[#1e1e1e] border-b-2 border-black px-3 py-2">
+        <div className="flex items-center gap-2">
+          <div className="text-cyan-400 font-mono text-xs font-bold uppercase">
+            {getLanguageDisplayName(language)}
+          </div>
+        </div>
+        <button
+          onClick={copyToClipboard}
+          className="p-1.5 px-2.5 bg-cyan-400 hover:bg-cyan-300 text-black font-bold border-2 border-black transition-all flex items-center gap-1.5 text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+          title="Copy code"
+        >
+          {copied ? (
+            <>
+              <FiCheck size={14} strokeWidth={3} />
+              <span className="text-xs font-black uppercase">Copied!</span>
+            </>
+          ) : (
+            <>
+              <FiCopy size={14} strokeWidth={3} />
+              <span className="text-xs font-black uppercase">Copy</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Code content */}
       <div
-        className="w-full overflow-x-auto"
+        className="w-full overflow-x-auto bg-[#1e1e1e]"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         <SyntaxHighlighter
           style={vscDarkPlus}
           language={language}
           PreTag="div"
-          className="!bg-transparent !p-2 !m-0 text-xs md:!p-3"
+          showLineNumbers={true}
+          className="!bg-transparent !p-0 !m-0 text-xs md:text-sm"
           customStyle={{
             margin: 0,
-            padding: "0.5rem",
+            padding: "1rem",
             background: "transparent",
-            fontSize: "0.75rem",
-            lineHeight: "1.3",
-            fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace",
+            fontSize: "0.875rem",
+            lineHeight: "1.5",
+            fontFamily:
+              "ui-monospace, SFMono-Regular, 'Courier New', Consolas, monospace",
             minWidth: "100%",
             width: "auto",
             overflowX: "auto",
-            whiteSpace: "pre",
-            wordBreak: "break-word",
           }}
           codeTagProps={{
             style: {
-              fontSize: "0.75rem",
-              lineHeight: "1.3",
-              fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace",
-              whiteSpace: "pre",
+              fontSize: "0.875rem",
+              lineHeight: "1.5",
+              fontFamily:
+                "ui-monospace, SFMono-Regular, 'Courier New', Consolas, monospace",
               display: "block",
-              wordBreak: "break-word",
             },
+          }}
+          lineNumberStyle={{
+            minWidth: "3em",
+            paddingRight: "1em",
+            color: "#858585",
+            textAlign: "right",
+            userSelect: "none",
+            fontFamily:
+              "ui-monospace, SFMono-Regular, 'Courier New', Consolas, monospace",
           }}
         >
           {code}
@@ -168,11 +215,25 @@ const MarkdownMessage: React.FC<{ content: string; isUser: boolean }> = ({
     code({ node, inline, className, children, ...props }: any) {
       const match = /language-(\w+)/.exec(className || "");
       const codeString = String(children).replace(/\n$/, "");
-      return !inline && match ? (
-        <div className="w-full max-w-full overflow-hidden">
-          <CodeBlockWithCopy code={codeString} language={match[1]} />
-        </div>
-      ) : (
+
+      // Check if it's a multi-line code block (has newlines) or has a language specified
+      const isMultiLine = codeString.includes("\n");
+      const hasLanguage = match && match[1];
+
+      // Render as code block if: not inline AND (has language OR is multi-line)
+      if (!inline && (hasLanguage || isMultiLine)) {
+        return (
+          <div className="w-full max-w-full overflow-hidden">
+            <CodeBlockWithCopy
+              code={codeString}
+              language={hasLanguage ? match[1] : "text"}
+            />
+          </div>
+        );
+      }
+
+      // Render as inline code (yellow background)
+      return (
         <code
           className="bg-yellow-200 px-1.5 py-0.5 border-2 border-black font-mono text-xs font-bold break-all whitespace-pre-wrap"
           {...props}
