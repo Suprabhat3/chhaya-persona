@@ -94,7 +94,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
             </div>
             <button
               onClick={onBackToPersonas}
-              className="flex items-center gap-1 text-xs text-black font-bold hover:underline transition-all"
+              className="flex items-center gap-1 text-xs text-black font-bold hover:underline transition-all cursor-pointer"
             >
               <FiArrowLeft size={12} strokeWidth={3} />
               <span>CHANGE PERSONA</span>
@@ -104,7 +104,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
         <button
           onClick={onNewChat}
-          className="w-full flex items-center justify-center gap-2 bg-pink-400 border-4 border-black text-black font-black uppercase py-3 px-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all"
+          className="w-full flex items-center justify-center gap-2 bg-pink-400 border-4 border-black text-black font-black uppercase py-3 px-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all cursor-pointer"
         >
           <FiPlus className="text-lg" strokeWidth={3} /> New Chat
         </button>
@@ -116,7 +116,9 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2">
                 <FiMessageSquare className="text-black" strokeWidth={3} />
-                <p className="text-black font-black text-sm">Past {selectedPersona?.name} Chats</p>
+                <p className="text-black font-black text-sm">
+                  Past {selectedPersona?.name} Chats
+                </p>
               </div>
             </div>
             <div className="overflow-y-auto flex-1 min-h-0 max-h-[50vh] space-y-2">
@@ -143,7 +145,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                         e.stopPropagation();
                         onDeleteConversation(c.id);
                       }}
-                      className="text-black hover:text-red-600 p-1 transition-colors"
+                      className="text-black hover:text-red-600 p-1 transition-colors cursor-pointer"
                     >
                       <FiTrash2 size={16} strokeWidth={3} />
                     </button>
@@ -164,12 +166,14 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                       user.email?.split("@")[0] ||
                       "User"}
                   </h3>
-                  <p className="text-xs text-black/70 font-bold text-green-600">PREMIUM</p>
+                  <p className="text-xs text-black/70 font-bold text-green-600">
+                    PREMIUM
+                  </p>
                 </div>
               </div>
               <button
                 onClick={onSignOut}
-                className="w-full bg-black text-white py-2 px-3 font-black uppercase text-xs border-2 border-black hover:bg-gray-800 transition-colors"
+                className="w-full bg-black text-white py-2 px-3 font-black uppercase text-xs border-2 border-black hover:bg-gray-800 transition-colors cursor-pointer"
               >
                 Sign Out
               </button>
@@ -189,7 +193,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
             </p>
             <button
               onClick={() => router.push("/login")}
-              className="w-full bg-black text-white hover:bg-gray-800 py-2 px-3 text-xs font-black uppercase transition-colors border-2 border-black"
+              className="w-full bg-black text-white hover:bg-gray-800 py-2 px-3 text-xs font-black uppercase transition-colors border-2 border-black cursor-pointer"
             >
               Sign In Now
             </button>
@@ -211,7 +215,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
             <h2 className="font-black text-black uppercase">Menu</h2>
             <button
               onClick={onClose}
-              className="p-2 bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+              className="p-2 bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
               aria-label="Close sidebar"
             >
               <FiX size={20} strokeWidth={3} />

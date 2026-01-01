@@ -219,7 +219,7 @@ const MarkdownMessage: React.FC<{ content: string; isUser: boolean }> = ({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-black underline decoration-4 decoration-cyan-400 hover:bg-cyan-400 transition-all duration-200 px-1 py-0.5 font-black"
+        className="text-black underline decoration-4 decoration-yellow-400 hover:bg-yellow-300 transition-all duration-200 px-1 py-0.5 font-black rounded-md p-2"
       >
         {children}
       </a>
@@ -260,7 +260,7 @@ const MessageCopyButton: React.FC<{ text: string; isAssistant: boolean }> = ({
   return (
     <button
       onClick={copy}
-      className="bg-white border-2 border-black px-2 py-1 text-black font-bold uppercase text-xs hover:bg-yellow-100 transition-all flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+      className="bg-white border-2 border-black px-2 py-1 text-black font-bold uppercase text-xs hover:bg-yellow-100 transition-all flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer"
       aria-label="Copy message"
       title="Copy response"
     >
@@ -293,7 +293,7 @@ const ModelSelector: React.FC<{
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-1 py-2 bg-cyan-300 border-4 border-black font-black uppercase text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+        className="flex items-center gap-2 px-1 py-2 bg-cyan-300 border-4 border-black font-black uppercase text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all cursor-pointer"
       >
         <span className="text-black">{selectedOption.label}</span>
         <FiChevronDown
@@ -319,7 +319,7 @@ const ModelSelector: React.FC<{
                   onModelChange(option.value);
                   setIsOpen(false);
                 }}
-                className={`w-full text-left px-4 py-3 hover:bg-yellow-100 transition-colors border-b-2 border-black last:border-b-0 ${
+                className={`w-full text-left px-4 py-3 hover:bg-yellow-100 transition-colors border-b-2 border-black last:border-b-0 cursor-pointer ${
                   selectedModel === option.value
                     ? "bg-cyan-200 border-l-4 border-l-black"
                     : ""
@@ -812,7 +812,7 @@ const ChatApp: React.FC = () => {
                                   feedback[msg.id] === "like"
                                     ? "bg-green-400"
                                     : "bg-white"
-                                } hover:bg-green-200 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]`}
+                                } hover:bg-green-200 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px cursor-pointer`}
                                 onClick={() =>
                                   setFeedback((f) => ({
                                     ...f,
@@ -829,7 +829,7 @@ const ChatApp: React.FC = () => {
                                   feedback[msg.id] === "dislike"
                                     ? "bg-red-400"
                                     : "bg-white"
-                                } hover:bg-red-200 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]`}
+                                } hover:bg-red-200 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer`}
                                 onClick={() =>
                                   setFeedback((f) => ({
                                     ...f,
