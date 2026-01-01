@@ -114,7 +114,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="bg-white fixed top-0 right-4 left-4 w-auto z-50 border-3 rounded-2xl border-black mt-2">
+    <header className="bg-white fixed top-0 right-4 left-4 md:right-50 md:left-50 w-auto z-50 border-3 rounded-2xl border-black mt-2">
       <div className="flex items-center justify-between px-6 pt-2 pb-2 max-w-7xl mx-auto w-full">
         <div
           className="flex items-center space-x-2 cursor-pointer"

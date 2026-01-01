@@ -63,14 +63,14 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
   const sidebarContent = (
     <div className="flex-1 flex flex-col min-h-0 h-full">
       <div className="p-4 md:p-6 flex-shrink-0 border-b-4 border-black bg-yellow-100">
-        <div className="flex items-center gap-3 mb-6  cursor-pointer" 
-        onClick={() => router.push("/")}>
-          <div className="w-10 h-10 bg-black border-2 border-black flex items-center justify-center">
+        <div
+          className="flex items-center gap-3 mb-6  cursor-pointer"
+          onClick={() => router.push("/")}
+        >
+          <div className="w-10 h-10 bg-black border-2 border-black flex items-center justify-center rounded-md">
             <img src="/favicon.ico" alt="Logo" className="w-6 h-6" />
           </div>
-          <h1
-            className="text-xl md:text-2xl font-black uppercase tracking-tighter text-black"
-          >
+          <h1 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-black">
             Chhaya Persona
           </h1>
         </div>
@@ -116,41 +116,46 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2">
                 <FiMessageSquare className="text-black" strokeWidth={3} />
-                <p className="text-black font-black uppercase text-sm">Chats</p>
+                <p className="text-black font-black text-sm">Past {selectedPersona?.name} Chats</p>
               </div>
             </div>
             <div className="overflow-y-auto flex-1 min-h-0 max-h-[50vh] space-y-2">
-              {conversations.map((c) => (
-                <div
-                  key={c.id}
-                  className={`flex items-center justify-between p-3 border-2 border-black cursor-pointer transition-all ${
-                    activeConversationId === c.id
-                      ? "bg-cyan-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                      : "bg-white hover:bg-yellow-100 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                  }`}
-                  onClick={() => onSelectConversation(c.id)}
-                >
-                  <span className="truncate flex-1 font-bold text-black text-sm">
-                    {c.title}
-                  </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteConversation(c.id);
-                    }}
-                    className="text-black hover:text-red-600 p-1 transition-colors"
+              {conversations
+                .filter(
+                  (c) =>
+                    selectedPersona && c.persona_key === selectedPersona.key
+                )
+                .map((c) => (
+                  <div
+                    key={c.id}
+                    className={`flex items-center justify-between p-3 border-2 border-black cursor-pointer transition-all ${
+                      activeConversationId === c.id
+                        ? "bg-cyan-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                        : "bg-white hover:bg-yellow-100 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                    }`}
+                    onClick={() => onSelectConversation(c.id)}
                   >
-                    <FiTrash2 size={16} strokeWidth={3} />
-                  </button>
-                </div>
-              ))}
+                    <span className="truncate flex-1 font-bold text-black text-sm">
+                      {c.title}
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteConversation(c.id);
+                      }}
+                      className="text-black hover:text-red-600 p-1 transition-colors"
+                    >
+                      <FiTrash2 size={16} strokeWidth={3} />
+                    </button>
+                  </div>
+                ))}
             </div>
           </div>
 
           <div className="p-4 md:p-6 border-t-4 border-black bg-green-300 flex-shrink-0">
             <div className="bg-white border-4 border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-black border-2 border-black flex items-center justify-center">
+                <div className="w-10 h-10 bg-black border-2 border-black flex items-center justify-center rounded-md">
                   <FiUser className="text-white text-sm" strokeWidth={3} />
                 </div>
                 <div className="flex-1">
@@ -159,7 +164,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                       user.email?.split("@")[0] ||
                       "User"}
                   </h3>
-                  <p className="text-xs text-black/70 font-bold">PREMIUM</p>
+                  <p className="text-xs text-black/70 font-bold text-green-600">PREMIUM</p>
                 </div>
               </div>
               <button

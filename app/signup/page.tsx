@@ -102,7 +102,7 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-yellow-50">
-      <main className="max-w-md mx-auto px-4 py-8 pt-24 md:pt-28">
+      <main className="max-w-md mx-auto px-4 py-8 pt-8 md:pt-16">
         <div className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-8">
           {/* Form Header */}
           <div className="text-center mb-6">
@@ -321,14 +321,14 @@ export default function SignupPage() {
                 I agree to the{" "}
                 <a
                   href="/terms"
-                  className="text-black underline font-black uppercase hover:bg-yellow-200"
+                  className="text-black p-1 underline text-xs font-black uppercase hover:bg-yellow-200 rounded-md"
                 >
                   Terms
                 </a>{" "}
                 and{" "}
                 <a
                   href="/privacy"
-                  className="text-black underline font-black uppercase hover:bg-yellow-200"
+                  className="text-black p-1 underline text-xs font-black uppercase hover:bg-yellow-200 rounded-md"
                 >
                   Privacy Policy
                 </a>

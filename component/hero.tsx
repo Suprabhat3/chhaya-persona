@@ -138,9 +138,9 @@ const HeroSection: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col">
+    <div className="relative flex flex-col">
       {/* Main Hero Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 text-center max-w-5xl mx-auto z-10">
+      <main className="flex flex-col items-center justify-center px-6 text-center max-w-5xl mx-auto z-10 mt-12 mb-12">
         {/* Badge */}
         <div className="mb-8 inline-block bg-green-400 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] px-4 py-2 transform -rotate-2">
           <span className="font-black text-sm uppercase tracking-wider text-black">
@@ -167,7 +167,7 @@ const HeroSection: React.FC = () => {
             if (user) {
               router.push("/persona");
             } else {
-              router.push("/signup");
+              router.push("/persona");
             }
           }}
           className="group relative inline-flex items-center justify-center"

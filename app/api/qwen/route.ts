@@ -1,6 +1,7 @@
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamText } from 'ai';
 import { NextRequest } from 'next/server';
+import { getPersona } from '@/lib/personaData';
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY, 
@@ -8,7 +9,10 @@ const openrouter = createOpenRouter({
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, personaInfo } = await req.json();
+    const { messages, personaKey } = await req.json();
+
+    // Get persona info from server-side data
+    const personaInfo = getPersona(personaKey || 'default');
 
     // Validate messages array
     if (!Array.isArray(messages) || messages.length === 0) {
@@ -69,7 +73,7 @@ Remember to embody this persona consistently throughout the conversation.`;
     const allMessages = [systemMessage, ...messages];
 
     const result = await streamText({
-      model: openrouter('qwen/qwen3-coder:free'), 
+      model: openrouter('cognitivecomputations/dolphin-mistral-24b-venice-edition:free'), 
       messages: allMessages,
       temperature: 0.7,
       maxOutputTokens: 3000, 

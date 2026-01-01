@@ -69,8 +69,8 @@ const modelOptions: ModelOption[] = [
   },
   {
     value: "qwen",
-    label: "Qwen coder",
-    description: "Good for coding - chinese model hai",
+    label: "dolphin-mistral",
+    description: "Uncensored hai bhai",
   },
   {
     value: "claude",
@@ -414,6 +414,10 @@ const ChatApp: React.FC = () => {
       } catch {
         /* ignore */
       }
+    } else {
+      // If no persona is selected, redirect to persona selection page
+      router.push("/persona");
+      return;
     }
 
     const storedModel = localStorage.getItem("selectedModel") as ModelType;
@@ -423,7 +427,7 @@ const ChatApp: React.FC = () => {
     ) {
       setSelectedModel(storedModel);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     (async () => {
@@ -559,7 +563,7 @@ const ChatApp: React.FC = () => {
             role: m.role,
             content: m.content,
           })),
-          personaInfo: selectedPersona,
+          personaKey: selectedPersona.key, // Send only the key instead of full persona object
         }),
       });
 
@@ -667,7 +671,7 @@ const ChatApp: React.FC = () => {
         {!user && isMobile && (
           <button
             onClick={handleBackToPersonas}
-            className="p-2 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
+            className="p-2 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all text-black"
             aria-label="Back to personas"
           >
             <FiArrowLeft size={20} strokeWidth={3} />
@@ -859,7 +863,7 @@ const ChatApp: React.FC = () => {
           </div>
 
           {/* Input Area */}
-          <div className="border-t-4 border-black bg-white p-4 md:p-6 pb-6 md:pb-8">
+          <div className="border-t-4 border-black bg-white p-4 md:p-6 pb-2 md:pb-2">
             <div className="max-w-4xl mx-auto flex gap-3 md:gap-4">
               <div className="flex-1 relative">
                 <input

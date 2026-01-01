@@ -26,7 +26,6 @@ const Footer: React.FC = () => {
       links: [
         { name: "About", href: "/" },
         { name: "Blog", href: "https://suprabhat-genai.hashnode.dev/" },
-        { name: "Careers", href: "/" },
         { name: "Press", href: "/" },
       ],
     },

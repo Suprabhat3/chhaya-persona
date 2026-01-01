@@ -1,6 +1,7 @@
 import { createGroq } from '@ai-sdk/groq';
 import { streamText } from 'ai';
 import { NextRequest } from 'next/server';
+import { getPersona } from '@/lib/personaData';
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY, // Make sure to set this in your environment variables
@@ -8,7 +9,10 @@ const groq = createGroq({
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, personaInfo } = await req.json();
+    const { messages, personaKey } = await req.json();
+
+    // Get persona info from server-side data
+    const personaInfo = getPersona(personaKey || 'default');
 
     // Validate messages array
     if (!Array.isArray(messages) || messages.length === 0) {
