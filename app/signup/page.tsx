@@ -1,66 +1,62 @@
-"use client"
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { authHelpers } from '@/lib/supabase';
+"use client";
 
-const SignupPage: React.FC = () => {
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { authHelpers } from "@/lib/supabase";
+import { FiEye, FiEyeOff, FiMail, FiLock, FiUser } from "react-icons/fi";
+
+export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    agreeToTerms: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: type === "checkbox" ? checked : value,
     }));
-    // Clear errors when user starts typing
     if (error) setError(null);
-  };
-
-  const validateForm = () => {
-    if (!formData.firstName.trim()) {
-      setError('First name is required');
-      return false;
-    }
-    if (!formData.lastName.trim()) {
-      setError('Last name is required');
-      return false;
-    }
-    if (!formData.email.trim()) {
-      setError('Email is required');
-      return false;
-    }
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return false;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return false;
-    }
-    if (!agreeToTerms) {
-      setError('Please agree to the Terms of Service');
-      return false;
-    }
-    return true;
   };
 
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+
+    if (
+      !formData.firstName.trim() ||
+      !formData.lastName.trim() ||
+      !formData.email.trim() ||
+      !formData.password.trim() ||
+      !formData.confirmPassword.trim()
+    ) {
+      setError("All fields are required");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    if (!formData.agreeToTerms) {
+      setError("Please agree to the Terms and Conditions");
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -74,16 +70,16 @@ const SignupPage: React.FC = () => {
       );
 
       if (error) {
-        setError(error.message);
+        if (error.message.includes("already registered")) {
+          setError("This email is already registered. Please try logging in.");
+        } else {
+          setError(error.message);
+        }
       } else if (data.user) {
-        setSuccess('Account created successfully! Please check your email to verify your account.');
-        // Optionally redirect after a delay
-        setTimeout(() => {
-          router.push('/login?message=Please check your email to verify your account');
-        }, 3000);
+        router.push("/login?message=Check your email to verify your account");
       }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+    } catch {
+      setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -92,77 +88,36 @@ const SignupPage: React.FC = () => {
   const handleGoogleSignup = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
       const { error } = await authHelpers.signInWithGoogle();
       if (error) {
         setError(error.message);
         setIsLoading(false);
       }
-      // Note: If successful, the user will be redirected to Google's OAuth flow
-    } catch (err) {
-      setError('Failed to sign up with Google. Please try again.');
+    } catch {
+      setError("Failed to sign up with Google. Please try again.");
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen w-full relative bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center py-15">
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `
-            radial-gradient(circle at center, rgba(143, 255, 176, 0.3), transparent)
-          `,
-        }}
-      />
-      {/* Decorative Elements */}
-      <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-xl opacity-60"></div>
-      <div className="absolute top-40 right-20 w-32 h-32 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-xl opacity-60"></div>
-      <div className="absolute bottom-40 left-20 w-24 h-24 bg-gradient-to-br from-pink-200 to-red-200 rounded-full blur-xl opacity-60"></div>
-      <div className="absolute bottom-20 right-10 w-16 h-16 bg-gradient-to-br from-yellow-200 to-orange-200 rounded-full blur-xl opacity-60"></div>
-
-      {/* Header */}
-      <header className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full z-10">
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-            <span><img src="favicon.ico" alt="Logo" className="rounded" /></span>
-          </div>
-          <span className="text-xl font-bold text-gray-900">Chhaya Persona</span>
-        </Link>
-        <div className="text-gray-600">
-          Already have an account?{' '}
-          <Link href="/login" className="text-purple-600 font-semibold hover:text-purple-700 transition-colors">
-            Log in
-          </Link>
-        </div>
-      </header>
-
-      {/* Main Signup Form */}
-      <div className="relative z-10 w-full max-w-lg mx-4 pt-5">
-        <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/30">
+    <div className="min-h-screen bg-yellow-50">
+      <main className="max-w-md mx-auto px-4 py-8 pt-24 md:pt-28">
+        <div className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-8">
           {/* Form Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-black text-gray-900 mb-2">
-              Join{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
-                Chhaya Persona
-              </span>
+          <div className="text-center mb-6">
+            <h1 className="text-3xl md:text-4xl font-black text-black uppercase tracking-tighter mb-2">
+              Join Us
             </h1>
-            <p className="text-gray-600">
-             Sign up to continue your conversations
+            <p className="text-black font-bold uppercase text-sm">
+              Create Your Account
             </p>
           </div>
-          {/* Error/Success Messages */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
-              <p className="text-red-600 text-sm">{error}</p>
-            </div>
-          )}
 
-          {success && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl">
-              <p className="text-green-600 text-sm">{success}</p>
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-4 bg-red-200 border-4 border-black">
+              <p className="text-black font-bold text-sm">{error}</p>
             </div>
           )}
 
@@ -170,36 +125,54 @@ const SignupPage: React.FC = () => {
           <button
             onClick={handleGoogleSignup}
             disabled={isLoading}
-            className="w-full bg-white border border-gray-300 rounded-full py-3 px-4 flex items-center justify-center space-x-3 hover:bg-gray-50 transition-colors duration-200 mb-6 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-white border-4 border-black py-3 px-4 flex items-center justify-center gap-3 font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-6"
           >
             {isLoading ? (
-              <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-4 border-black border-t-transparent animate-spin"></div>
             ) : (
               <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                />
               </svg>
             )}
-            <span className="text-gray-700 font-medium">
-              {isLoading ? 'Signing up...' : 'Continue with Google'}
+            <span className="text-black">
+              {isLoading ? "Signing up..." : "Continue with Google"}
             </span>
           </button>
 
           {/* Divider */}
           <div className="relative flex items-center justify-center my-6">
-            <div className="border-t border-gray-200 w-full"></div>
-            <span className="bg-white px-4 text-sm text-gray-500 absolute">or</span>
+            <div className="border-t-4 border-black w-full"></div>
+            <span className="bg-white px-4 text-sm font-black text-black absolute uppercase">
+              Or
+            </span>
           </div>
 
           {/* Email Signup Form */}
-          <form onSubmit={handleEmailSignup} className="space-y-5">
+          <form onSubmit={handleEmailSignup} className="space-y-4">
             {/* Name Fields */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                  First Name
+                <label
+                  htmlFor="firstName"
+                  className="block text-xs font-black text-black mb-2 uppercase flex items-center gap-1"
+                >
+                  <FiUser size={14} strokeWidth={3} />
+                  First
                 </label>
                 <input
                   type="text"
@@ -208,14 +181,18 @@ const SignupPage: React.FC = () => {
                   value={formData.firstName}
                   onChange={handleInputChange}
                   disabled={isLoading}
-                  className="text-black w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed"
-                  placeholder="Piyush"
+                  className="w-full px-3 py-2 text-sm border-4 border-black font-medium text-black focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50"
+                  placeholder="John"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Last Name
+                <label
+                  htmlFor="lastName"
+                  className="block text-xs font-black text-black mb-2 uppercase flex items-center gap-1"
+                >
+                  <FiUser size={14} strokeWidth={3} />
+                  Last
                 </label>
                 <input
                   type="text"
@@ -224,8 +201,8 @@ const SignupPage: React.FC = () => {
                   value={formData.lastName}
                   onChange={handleInputChange}
                   disabled={isLoading}
-                  className="text-black w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed"
-                  placeholder="Kumar"
+                  className="w-full px-3 py-2 text-sm border-4 border-black font-medium text-black focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50"
+                  placeholder="Doe"
                   required
                 />
               </div>
@@ -233,8 +210,12 @@ const SignupPage: React.FC = () => {
 
             {/* Email Input */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email address
+              <label
+                htmlFor="email"
+                className="block text-xs font-black text-black mb-2 uppercase flex items-center gap-2"
+              >
+                <FiMail size={16} strokeWidth={3} />
+                Email Address
               </label>
               <input
                 type="email"
@@ -243,7 +224,7 @@ const SignupPage: React.FC = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 disabled={isLoading}
-                className="text-black w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border-4 border-black font-medium text-black focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50"
                 placeholder="john@example.com"
                 required
               />
@@ -251,80 +232,106 @@ const SignupPage: React.FC = () => {
 
             {/* Password Input */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-xs font-black text-black mb-2 uppercase flex items-center gap-2"
+              >
+                <FiLock size={16} strokeWidth={3} />
                 Password
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
                   disabled={isLoading}
-                  className="text-black w-full px-4 py-3 pr-12 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed"
-                  placeholder="Create a strong password"
+                  className="w-full px-4 py-3 pr-12 border-4 border-black font-medium text-black focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50"
+                  placeholder="Min. 6 characters"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black disabled:cursor-not-allowed"
                 >
-                  {showPassword ? '👁️' : '👁️‍🗨️'}
+                  {showPassword ? (
+                    <FiEyeOff size={20} strokeWidth={3} />
+                  ) : (
+                    <FiEye size={20} strokeWidth={3} />
+                  )}
                 </button>
               </div>
             </div>
 
             {/* Confirm Password Input */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-xs font-black text-black mb-2 uppercase flex items-center gap-2"
+              >
+                <FiLock size={16} strokeWidth={3} />
                 Confirm Password
               </label>
               <div className="relative">
                 <input
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? "text" : "password"}
                   id="confirmPassword"
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   disabled={isLoading}
-                  className="text-black w-full px-4 py-3 pr-12 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed"
-                  placeholder="Confirm your password"
+                  className="w-full px-4 py-3 pr-12 border-4 border-black font-medium text-black focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50"
+                  placeholder="Confirm password"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   disabled={isLoading}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black disabled:cursor-not-allowed"
                 >
-                  {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                  {showConfirmPassword ? (
+                    <FiEyeOff size={20} strokeWidth={3} />
+                  ) : (
+                    <FiEye size={20} strokeWidth={3} />
+                  )}
                 </button>
               </div>
             </div>
 
-            {/* Terms Agreement */}
-            <div className="flex items-start space-x-3">
+            {/* Terms Checkbox */}
+            <div className="flex items-start gap-3">
               <input
                 type="checkbox"
                 id="agreeToTerms"
-                checked={agreeToTerms}
-                onChange={(e) => setAgreeToTerms(e.target.checked)}
+                name="agreeToTerms"
+                checked={formData.agreeToTerms}
+                onChange={handleInputChange}
                 disabled={isLoading}
-                className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 disabled:cursor-not-allowed"
+                className="mt-1 w-5 h-5 border-4 border-black accent-pink-400"
                 required
               />
-              <label htmlFor="agreeToTerms" className="text-sm text-gray-600">
-                I agree to the{' '}
-                <Link href="/terms" className="text-purple-600 hover:text-purple-700 transition-colors">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="/privacy" className="text-purple-600 hover:text-purple-700 transition-colors">
+              <label
+                htmlFor="agreeToTerms"
+                className="text-sm text-black font-bold"
+              >
+                I agree to the{" "}
+                <a
+                  href="/terms"
+                  className="text-black underline font-black uppercase hover:bg-yellow-200"
+                >
+                  Terms
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/privacy"
+                  className="text-black underline font-black uppercase hover:bg-yellow-200"
+                >
                   Privacy Policy
-                </Link>
+                </a>
               </label>
             </div>
 
@@ -332,32 +339,26 @@ const SignupPage: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full transform transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0 disabled:transform-none disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-green-400 hover:bg-green-300 text-black border-4 border-black px-6 py-4 font-black uppercase shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <div className="absolute inset-0 bg-black/20 rounded-full transform translate-y-1 group-hover:translate-y-0.5 transition-transform duration-150 group-disabled:translate-y-1"></div>
-              <div className="relative bg-gradient-to-b from-pink-400 to-pink-500 hover:from-pink-300 hover:to-pink-400 text-white px-8 py-4 rounded-full font-medium text-lg border border-pink-300/50 shadow-sm flex items-center justify-center">
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                    Creating Account...
-                  </>
-                ) : (
-                  'Create Account'
-                )}
-              </div>
+              {isLoading ? "Creating account..." : "Create Account"}
             </button>
           </form>
 
-          {/* Footer */}
-          <div className="text-center mt-6">
-            <p className="text-xs text-gray-500">
-              By creating an account, you'll be able to save your conversation history and access premium features.
+          {/* Login link */}
+          <div className="mt-6 text-center">
+            <p className="text-black font-bold text-sm">
+              Already have an account?{" "}
+              <a
+                href="/login"
+                className="text-black p-2 font-black uppercase hover:bg-yellow-200 rounded-md"
+              >
+                Log in
+              </a>
             </p>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
-};
-
-export default SignupPage;
+}

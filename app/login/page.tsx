@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authHelpers } from "@/lib/supabase";
+import { FiEye, FiEyeOff, FiMail, FiLock } from "react-icons/fi";
 
 function LoginContent() {
   const router = useRouter();
@@ -106,71 +106,31 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen w-full relative bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center py-12">
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `
-            radial-gradient(circle at center, rgba(143, 255, 176, 0.3), transparent)
-          `,
-        }}
-      />
-
-      {/* Decorative Elements */}
-      <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-xl opacity-60"></div>
-      <div className="absolute top-40 right-20 w-32 h-32 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-xl opacity-60"></div>
-      <div className="absolute bottom-40 left-20 w-24 h-24 bg-gradient-to-br from-pink-200 to-red-200 rounded-full blur-xl opacity-60"></div>
-      <div className="absolute bottom-20 right-10 w-16 h-16 bg-gradient-to-br from-yellow-200 to-orange-200 rounded-full blur-xl opacity-60"></div>
-
-      {/* Header */}
-      <header className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full z-10">
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-            <span>
-              <img src="/favicon.ico" alt="Logo" className="rounded" />
-            </span>
-          </div>
-          <span className="text-xl font-bold text-gray-900">Chhaya Persona</span>
-        </Link>
-        <div className="text-gray-600">
-          Don't have an account?{" "}
-          <Link
-            href="/signup"
-            className="text-purple-600 font-semibold hover:text-purple-700 transition-colors"
-          >
-            Sign up
-          </Link>
-        </div>
-      </header>
-
-      {/* Main Login Form */}
-      <div className="relative z-10 w-full max-w-md mx-4">
-        <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/30">
+    <div className="min-h-screen bg-yellow-50">
+      <main className="max-w-md mx-auto px-4 py-8 pt-24 md:pt-28">
+        <div className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-8">
           {!showForgotPassword ? (
             <>
               {/* Form Header */}
-              <div className="text-center mb-8">
-                <h1 className="text-3xl font-black text-gray-900 mb-2">
-                  Welcome back to{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
-                    Chhaya Persona
-                  </span>
+              <div className="text-center mb-6">
+                <h1 className="text-3xl md:text-4xl font-black text-black uppercase tracking-tighter mb-2">
+                  Welcome Back
                 </h1>
-                <p className="text-gray-600">
-                  login in to continue your conversations
+                <p className="text-black font-bold uppercase text-sm">
+                  Login to continue
                 </p>
               </div>
 
               {/* Error/Success Messages */}
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
-                  <p className="text-red-600 text-sm">{error}</p>
+                <div className="mb-4 p-4 bg-red-200 border-4 border-black">
+                  <p className="text-black font-bold text-sm">{error}</p>
                 </div>
               )}
 
               {message && (
-                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl">
-                  <p className="text-green-600 text-sm">{message}</p>
+                <div className="mb-4 p-4 bg-green-200 border-4 border-black">
+                  <p className="text-black font-bold text-sm">{message}</p>
                 </div>
               )}
 
@@ -178,10 +138,10 @@ function LoginContent() {
               <button
                 onClick={handleGoogleLogin}
                 disabled={isLoading}
-                className="w-full bg-white border border-gray-300 rounded-full py-3 px-4 flex items-center justify-center space-x-3 hover:bg-gray-50 transition-colors duration-200 mb-6 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-white border-4 border-black py-3 px-4 flex items-center justify-center gap-3 font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-6"
               >
                 {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-4 border-black border-t-transparent animate-spin"></div>
                 ) : (
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path
@@ -202,26 +162,29 @@ function LoginContent() {
                     />
                   </svg>
                 )}
-                <span className="text-gray-700 font-medium">
+                <span className="text-black">
                   {isLoading ? "Signing in..." : "Continue with Google"}
                 </span>
               </button>
 
-          {/* Divider */}
-          <div className="relative flex items-center justify-center my-6">
-            <div className="border-t border-gray-200 w-full"></div>
-            <span className="bg-white px-4 text-sm text-gray-500 absolute">or</span>
-          </div>
+              {/* Divider */}
+              <div className="relative flex items-center justify-center my-6">
+                <div className="border-t-4 border-black w-full"></div>
+                <span className="bg-white px-4 text-sm font-black text-black absolute uppercase">
+                  Or
+                </span>
+              </div>
 
               {/* Email Login Form */}
-              <form onSubmit={handleEmailLogin} className="space-y-5">
+              <form onSubmit={handleEmailLogin} className="space-y-4">
                 {/* Email Input */}
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-xs font-black text-black mb-2 uppercase flex items-center gap-2"
                   >
-                    Email address
+                    <FiMail size={16} strokeWidth={3} />
+                    Email Address
                   </label>
                   <input
                     type="email"
@@ -230,7 +193,7 @@ function LoginContent() {
                     value={formData.email}
                     onChange={handleInputChange}
                     disabled={isLoading}
-                    className="text-black w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border-4 border-black font-medium text-black focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="john@example.com"
                     required
                   />
@@ -240,8 +203,9 @@ function LoginContent() {
                 <div>
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-xs font-black text-black mb-2 uppercase flex items-center gap-2"
                   >
+                    <FiLock size={16} strokeWidth={3} />
                     Password
                   </label>
                   <div className="relative">
@@ -252,7 +216,7 @@ function LoginContent() {
                       value={formData.password}
                       onChange={handleInputChange}
                       disabled={isLoading}
-                      className="text-black w-full px-4 py-3 pr-12 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full px-4 py-3 pr-12 border-4 border-black font-medium text-black focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Enter your password"
                       required
                     />
@@ -260,9 +224,13 @@ function LoginContent() {
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isLoading}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black disabled:cursor-not-allowed"
                     >
-                      {showPassword ? "👁️" : "👁️‍🗨️"}
+                      {showPassword ? (
+                        <FiEyeOff size={20} strokeWidth={3} />
+                      ) : (
+                        <FiEye size={20} strokeWidth={3} />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -272,7 +240,7 @@ function LoginContent() {
                   <button
                     type="button"
                     onClick={() => setShowForgotPassword(true)}
-                    className="text-sm text-purple-600 hover:text-purple-700 transition-colors"
+                    className="text-sm text-black font-black uppercase hover:underline"
                   >
                     Forgot password?
                   </button>
@@ -282,53 +250,57 @@ function LoginContent() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="group relative w-full transform transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0 disabled:transform-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-pink-400 hover:bg-pink-300 text-black border-4 border-black px-6 py-4 font-black uppercase shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <div className="absolute inset-0 bg-black/20 rounded-full transform translate-y-1 group-hover:translate-y-0.5 transition-transform duration-150 group-disabled:translate-y-1"></div>
-                  <div className="relative bg-gradient-to-b from-pink-400 to-pink-500 hover:from-pink-300 hover:to-pink-400 text-white px-8 py-4 rounded-full font-medium text-lg border border-pink-300/50 shadow-sm flex items-center justify-center">
-                    {isLoading ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                        Signing in...
-                      </>
-                    ) : (
-                      "Sign In"
-                    )}
-                  </div>
+                  {isLoading ? "Signing in..." : "Sign In"}
                 </button>
               </form>
+
+              {/* Sign up link */}
+              <div className="mt-6 text-center">
+                <p className="text-black font-bold text-sm">
+                  Don't have an account?{" "}
+                  <a
+                    href="/signup"
+                    className="text-black p-2 font-black uppercase hover:bg-yellow-200 rounded-md"
+                  >
+                    Sign up
+                  </a>
+                </p>
+              </div>
             </>
           ) : (
             /* Forgot Password Form */
             <>
-              <div className="text-center mb-8">
-                <h1 className="text-3xl font-black text-gray-900 mb-2">
-                  Reset your password
+              <div className="text-center mb-6">
+                <h1 className="text-3xl md:text-4xl font-black text-black uppercase tracking-tighter mb-2">
+                  Reset Password
                 </h1>
-                <p className="text-gray-600">
-                  Enter your email address and we'll send you a reset link
+                <p className="text-black font-bold uppercase text-sm">
+                  We'll send you a reset link
                 </p>
               </div>
 
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
-                  <p className="text-red-600 text-sm">{error}</p>
+                <div className="mb-4 p-4 bg-red-200 border-4 border-black">
+                  <p className="text-black font-bold text-sm">{error}</p>
                 </div>
               )}
 
               {message && (
-                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl">
-                  <p className="text-green-600 text-sm">{message}</p>
+                <div className="mb-4 p-4 bg-green-200 border-4 border-black">
+                  <p className="text-black font-bold text-sm">{message}</p>
                 </div>
               )}
 
-              <form onSubmit={handleForgotPassword} className="space-y-5">
+              <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div>
                   <label
                     htmlFor="forgotEmail"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-xs font-black text-black mb-2 uppercase flex items-center gap-2"
                   >
-                    Email address
+                    <FiMail size={16} strokeWidth={3} />
+                    Email Address
                   </label>
                   <input
                     type="email"
@@ -336,7 +308,7 @@ function LoginContent() {
                     value={forgotPasswordEmail}
                     onChange={(e) => setForgotPasswordEmail(e.target.value)}
                     disabled={isLoading}
-                    className="text-black w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none bg-white/70 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border-4 border-black font-medium text-black focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="john@example.com"
                     required
                   />
@@ -345,19 +317,9 @@ function LoginContent() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="group relative w-full transform transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0 disabled:transform-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-cyan-400 hover:bg-cyan-300 text-black border-4 border-black px-6 py-4 font-black uppercase shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <div className="absolute inset-0 bg-black/20 rounded-full transform translate-y-1 group-hover:translate-y-0.5 transition-transform duration-150 group-disabled:translate-y-1"></div>
-                  <div className="relative bg-gradient-to-b from-pink-400 to-pink-500 hover:from-pink-300 hover:to-pink-400 text-white px-8 py-4 rounded-full font-medium text-lg border border-pink-300/50 shadow-sm flex items-center justify-center">
-                    {isLoading ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                        Sending...
-                      </>
-                    ) : (
-                      "Send Reset Link"
-                    )}
-                  </div>
+                  {isLoading ? "Sending..." : "Send Reset Link"}
                 </button>
 
                 <div className="text-center">
@@ -368,7 +330,7 @@ function LoginContent() {
                       setForgotPasswordEmail("");
                       setError(null);
                     }}
-                    className="text-sm text-purple-600 hover:text-purple-700 transition-colors"
+                    className="text-sm text-black font-black uppercase hover:underline"
                   >
                     Back to login
                   </button>
@@ -376,17 +338,12 @@ function LoginContent() {
               </form>
             </>
           )}
-
-          <div className="text-center mt-6">
-            <p className="text-xs text-gray-500">
-              Secure login protected by industry-standard encryption
-            </p>
-          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
+
 export default function LoginPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>

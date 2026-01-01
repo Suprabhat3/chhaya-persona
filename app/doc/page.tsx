@@ -1,133 +1,186 @@
-"use client";
 import React from "react";
+import Navbar from "@/component/navbar";
+import { FiBook, FiZap, FiUsers, FiMessageCircle } from "react-icons/fi";
 
-const DocumentationPage = () => {
+const DocumentationPage: React.FC = () => {
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-6 max-w-5xl">
+    <div className="min-h-screen bg-yellow-50">
+      <Navbar />
+
+      <main className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12 pt-24 md:pt-28">
         {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-4xl md:text-6xl font-black text-black uppercase tracking-tighter mb-4">
             Documentation
           </h1>
-          <p className="text-gray-600">Last updated: 15/08/2025</p>
+          <div className="inline-block bg-white border-4 border-black px-6 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <p className="text-black font-bold uppercase text-sm">
+              Learn How to Use Chhaya Persona
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-8">
-          {/* Intro Section */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              About This Project
-            </h2>
-            <p className="mb-4 text-gray-700">
-              Chhaya Persona is an open-source AI-powered platform that enables
-              conversations with simulated personas of famous individuals,
-              innovators, and thought leaders.  
-              This project is built with modern web technologies and designed
-              for both educational and entertainment purposes.
-            </p>
-            <p className="text-gray-700">
-              All personas and responses are AI-generated and are not authored
-              by the real individuals they represent.
-            </p>
-          </div>
+        {/* Intro */}
+        <div className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-8 mb-6">
+          <p className="text-black font-medium leading-relaxed text-lg">
+            Welcome to Chhaya Persona! This documentation will help you get
+            started and make the most of your AI-powered conversations with
+            historical and contemporary figures.
+          </p>
+        </div>
 
-          {/* Open Source Section */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              Open Source
-            </h2>
-            <p className="mb-4 text-gray-700">
-              This project is open source and contributions are welcome!  
-              You can explore the source code, report issues, or submit pull
-              requests through our GitHub repository.
-            </p>
-            <a
-              href="https://github.com/Suprabhat3/chhaya-persona"
-              target="_blank"
-              className="text-emerald-500 hover:underline font-semibold"
-            >
-              View Project on GitHub →
-            </a>
-          </div>
-
-          {/* Getting Started */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
+        {/* Getting Started */}
+        <div className="bg-cyan-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-black flex items-center justify-center border-2 border-black">
+              <FiZap className="text-white" size={24} strokeWidth={3} />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-black uppercase">
               Getting Started
             </h2>
-            <ul className="list-disc list-inside space-y-2 text-gray-700">
-              <li>Clone the repository from GitHub</li>
-              <li>Install dependencies with <code>npm install</code></li>
-              <li>Run the development server with <code>npm run dev</code></li>
-              <li>Access the app locally at <code>http://localhost:3000</code></li>
-            </ul>
           </div>
+          <ol className="space-y-3 font-medium text-black">
+            <li className="bg-white border-2 border-black p-4">
+              <strong className="font-black">1. Select a Persona:</strong>{" "}
+              Browse our collection of AI personas and choose one to chat with
+            </li>
+            <li className="bg-white border-2 border-black p-4">
+              <strong className="font-black">2. Start Chatting:</strong> Type
+              your message and press Enter or click Send
+            </li>
+            <li className="bg-white border-2 border-black p-4">
+              <strong className="font-black">3. Sign In (Optional):</strong>{" "}
+              Create an account to save your conversations and get unlimited
+              chats
+            </li>
+          </ol>
+        </div>
 
-          {/* License */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              License
+        {/* Features */}
+        <div className="bg-pink-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-black flex items-center justify-center border-2 border-black">
+              <FiMessageCircle
+                className="text-white"
+                size={24}
+                strokeWidth={3}
+              />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-black uppercase">
+              Key Features
             </h2>
-            <p className="text-gray-700">
-              This project is licensed under the MIT License you are free to
-              use, modify, and distribute it, provided that the original
-              copyright notice is included in any copies or substantial portions
-              of the software.
-            </p>
           </div>
-
-          {/* Contact */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              Contact
-            </h2>
-            <p className="mb-4 text-gray-700">
-              For questions, suggestions, or contributions, you can reach out:
-            </p>
-            <div className="p-4 bg-gray-50 rounded-lg space-y-2">
-              <p className="font-semibold text-black">Email:</p>
-              <a
-                href="mailto:suprabhat.work@gmail.com"
-                className="text-emerald-500 hover:underline"
-              >
-                suprabhat.work@gmail.com
-              </a>
-              <div className="flex gap-4 mt-2">
-                {/* X */}
-                <a
-                  href="https://x.com/Suprabhat_3"
-                  target="_blank"
-                  className="text-gray-400 hover:text-emerald-500"
-                >
-                  <svg
-                    className="h-6 w-6"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
-                  </svg>
-                </a>
-                {/* LinkedIn */}
-                <a
-                  href="https://www.linkedin.com/in/suprabhatt/"
-                  target="_blank"
-                  className="text-gray-400 hover:text-emerald-500"
-                >
-                  <svg
-                    className="h-6 w-6"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
-                  </svg>
-                </a>
-              </div>
+          <div className="space-y-3">
+            <div className="bg-white border-2 border-black p-4">
+              <h3 className="font-black text-black/80 text-lg mb-2 uppercase">
+                🤖 AI-Powered Conversations
+              </h3>
+              <p className="font-medium text-black/80">
+                Chat with historically accurate AI personas powered by advanced
+                language models
+              </p>
+            </div>
+            <div className="bg-white border-2 border-black p-4">
+              <h3 className="font-black text-black/80 text-lg mb-2 uppercase">
+                💾 Chat History
+              </h3>
+              <p className="font-medium text-black/80">
+                Signed-in users can access their complete conversation history
+              </p>
+            </div>
+            <div className="bg-white border-2 border-black p-4">
+              <h3 className="font-black text-black/80 text-lg mb-2 uppercase">
+                🎭 Multiple Personas
+              </h3>
+              <p className="font-medium text-black/80">
+                Choose from a diverse range of historical and contemporary
+                figures
+              </p>
+            </div>
+            <div className="bg-white border-2 border-black p-4">
+              <h3 className="font-black text-black/80 text-lg mb-2 uppercase">
+                📱 Mobile Friendly
+              </h3>
+              <p className="font-medium text-black/80">
+                Fully responsive design works seamlessly on all devices
+              </p>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+
+        {/* Available Personas */}
+        <div className="bg-green-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-black flex items-center justify-center border-2 border-black">
+              <FiUsers className="text-white" size={24} strokeWidth={3} />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-black uppercase">
+              Available Personas
+            </h2>
+          </div>
+          <p className="font-medium text-black mb-4">
+            Each persona is carefully crafted to reflect their unique
+            personality, expertise, and communication style:
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="bg-white border-2 border-black p-3">
+              <p className="font-black text-sm text-black/80">• Historical Figures</p>
+            </div>
+            <div className="bg-white border-2 border-black p-3">
+              <p className="font-black text-sm text-black/80">• Scientists & Inventors</p>
+            </div>
+            <div className="bg-white border-2 border-black p-3">
+              <p className="font-black text-sm text-black/80">• Philosophers & Thinkers</p>
+            </div>
+            <div className="bg-white border-2 border-black p-3">
+              <p className="font-black text-sm text-black/80">• Contemporary Leaders</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Tips */}
+        <div className="bg-yellow-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-black flex items-center justify-center border-2 border-black">
+              <FiBook className="text-white" size={24} strokeWidth={3} />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-black uppercase">
+              Tips for Best Results
+            </h2>
+          </div>
+          <ul className="space-y-3 font-medium text-black">
+            <li className="bg-white border-2 border-black p-4">
+              ✓ Be specific and clear in your questions
+            </li>
+            <li className="bg-white border-2 border-black p-4">
+              ✓ Ask follow-up questions to dive deeper into topics
+            </li>
+            <li className="bg-white border-2 border-black p-4">
+              ✓ Remember: Responses are AI-generated simulations
+            </li>
+            <li className="bg-white border-2 border-black p-4">
+              ✓ Verify important information from reliable sources
+            </li>
+          </ul>
+        </div>
+
+        {/* Need Help */}
+        <div className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 text-center">
+          <h2 className="text-2xl md:text-3xl font-black text-black uppercase mb-4">
+            Need More Help?
+          </h2>
+          <p className="text-black font-medium mb-6">
+            Check out our Help & Support page or contact us directly
+          </p>
+          <a
+            href="/help"
+            className="inline-block bg-pink-400 hover:bg-pink-300 text-black border-4 border-black px-8 py-4 font-black uppercase shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all"
+          >
+            Visit Help Center
+          </a>
+        </div>
+      </main>
+    </div>
   );
 };
 

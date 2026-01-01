@@ -1,9 +1,7 @@
 "use client";
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-
-
+import React from "react";
+import { useRouter } from "next/navigation";
 
 interface Step {
   title: string;
@@ -16,84 +14,92 @@ const HowItWorksSection: React.FC = () => {
   const steps: Step[] = [
     {
       title: "Choose Your Persona",
-      description: "Select from our collection of your favraite personalities, innovators, and thought leaders to start your conversation.",
-      icon: "👤"
+      description:
+        "Select from our collection of your favraite personalities, innovators, and thought leaders to start your conversation.",
+      icon: "👤",
     },
     {
       title: "Start the Conversation",
-      description: "Ask questions, seek advice, or explore ideas with AI-powered personalities that think and respond authentically.",
-      icon: "💬"
+      description:
+        "Ask questions, seek advice, or explore ideas with AI-powered personalities that think and respond authentically.",
+      icon: "💬",
     },
     {
       title: "Gain New Insights",
-      description: "Discover unique perspectives and wisdom from the your favraite personalities, powered by cutting-edge AI technology.",
-      icon: "💡"
-    }
+      description:
+        "Discover unique perspectives and wisdom from the your favraite personalities, powered by cutting-edge AI technology.",
+      icon: "💡",
+    },
   ];
 
   return (
     <section className="relative py-20 flex flex-col m-0">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
-            How it{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+          <h2 className="text-4xl md:text-6xl font-black text-black mb-6 uppercase tracking-tight transform -rotate-1">
+            How it{" "}
+            <span className="bg-purple-500 text-white px-3 py-1 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               Works
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Experience conversations with your favraite personalities, powered by advanced AI technology.
-          </p>
+          <div className="bg-white border-2 border-black inline-block p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-1 max-w-3xl">
+            <p className="text-xl font-bold text-black">
+              Experience conversations with your favraite personalities, powered
+              by advanced AI technology.
+            </p>
+          </div>
         </div>
 
         {/* Steps Grid */}
         <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
           {steps.map((step, index) => (
-            <div key={index} className="text-center group">
+            <div key={index} className="text-center group relative">
               {/* Step Number */}
-              <div className="relative mb-8">
-                <div className="w-20 h-20 mx-auto bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center border-2 border-purple-200/50 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-3xl">{step.icon}</span>
+              <div className="relative mb-8 inline-block">
+                <div className="w-24 h-24 mx-auto bg-white rounded-none flex items-center justify-center border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
+                  <span className="text-4xl">{step.icon}</span>
+                </div>
+                <div className="absolute -top-3 -right-3 w-8 h-8 bg-black text-white flex items-center justify-center font-black border-2 border-white">
+                  {index + 1}
                 </div>
               </div>
 
               {/* Step Content */}
-              <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors">
-                {step.title}
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {step.description}
-              </p>
+              <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] min-h-[200px] flex flex-col justify-center transform group-hover:-rotate-1 transition-transform">
+                <h3 className="text-2xl font-black text-black mb-4 uppercase">
+                  {step.title}
+                </h3>
+                <p className="text-black font-medium leading-relaxed">
+                  {step.description}
+                </p>
+              </div>
 
               {/* Connector Line (except last item) */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-10 left-full w-full h-0.5 bg-gradient-to-r from-purple-200 to-transparent transform -translate-x-10 -translate-y-1/2" style={{ zIndex: -1 }} />
+                <div className="hidden md:block absolute top-[48px] left-1/2 w-full h-[4px] bg-black z-[-1] transform translate-x-1/2" />
               )}
             </div>
           ))}
         </div>
 
         {/* Bottom CTA */}
-        <div className="text-center mt-16">
-          <button  
-          onClick={() => router.push('/persona')}
-          className="group relative transform transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0">
-            <div className="absolute inset-0 bg-black/20 rounded-full transform translate-y-1 group-hover:translate-y-0.5 transition-transform duration-150"></div>
-            <div className="relative bg-gradient-to-b from-pink-200 to-pink-300 hover:from-pink-150 hover:to-pink-250 text-gray-900 px-8 py-4 rounded-full font-medium text-lg border border-pink-300/50 shadow-sm">
+        <div className="text-center mt-20">
+          <button
+            onClick={() => router.push("/persona")}
+            className="group relative inline-flex"
+          >
+            <div className="relative bg-orange-400 hover:bg-orange-300 text-black px-10 py-5 font-black text-2xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[8px] active:translate-y-[8px] active:shadow-none transition-all duration-200">
               Start Your First Conversation
             </div>
           </button>
         </div>
       </div>
 
-      {/* Decorative Elements - Same as Hero Section */}
-      <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-xl opacity-60"></div>
-      <div className="absolute top-40 right-20 w-32 h-32 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-xl opacity-60"></div>
-      <div className="absolute bottom-40 left-20 w-24 h-24 bg-gradient-to-br from-pink-200 to-red-200 rounded-full blur-xl opacity-60"></div>
-      <div className="absolute bottom-20 right-10 w-16 h-16 bg-gradient-to-br from-yellow-200 to-orange-200 rounded-full blur-xl opacity-60"></div>
+      {/* Decorative Assets */}
+      <div className="absolute top-20 left-10 w-0 h-0 border-l-[20px] border-l-transparent border-b-[40px] border-b-blue-500 border-r-[20px] border-r-transparent filter drop-shadow-[4px_4px_0px_rgba(0,0,0,1)] transform -rotate-12 hidden md:block"></div>
+      <div className="absolute bottom-40 right-10 w-16 h-16 bg-pink-400 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-full hidden md:block"></div>
     </section>
-    
   );
 };
 

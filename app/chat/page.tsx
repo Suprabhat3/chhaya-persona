@@ -1,15 +1,29 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { FiPlus, FiSend, FiTrash2, FiMessageSquare, FiUser, FiCopy, FiCheck, FiArrowLeft, FiClock, FiMenu, FiX, FiChevronLeft, FiChevronRight, FiCode, FiChevronDown, FiThumbsUp, FiThumbsDown } from "react-icons/fi";
-import { useRouter } from 'next/navigation';
+import {
+  FiSend,
+  FiUser,
+  FiCopy,
+  FiCheck,
+  FiArrowLeft,
+  FiMenu,
+  FiX,
+  FiChevronLeft,
+  FiChevronRight,
+  FiChevronDown,
+  FiThumbsUp,
+  FiThumbsDown,
+} from "react-icons/fi";
+import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { Components } from "react-markdown";
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/hooks/useAuth';
-import { useChatLimit } from '@/hooks/useChatLimit';
-import { ChatLimitBanner } from '@/component/ChatLimitBanner';
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/hooks/useAuth";
+import { useChatLimit } from "@/hooks/useChatLimit";
+import { ChatLimitBanner } from "@/component/ChatLimitBanner";
+import { ChatSidebar } from "@/component/ChatSidebar";
 
 interface Message {
   id: string;
@@ -29,7 +43,7 @@ interface PersonaData {
   additionalContext: string;
 }
 
-type ModelType = 'gemini' | 'groq' | 'gpt-oss' | 'qwen' | 'claude';
+type ModelType = "gemini" | "groq" | "gpt-oss" | "qwen" | "claude";
 
 interface ModelOption {
   value: ModelType;
@@ -38,16 +52,40 @@ interface ModelOption {
 }
 
 const modelOptions: ModelOption[] = [
-  { value: 'gemini', label: 'Gemini', description: 'Google\'s advanced AI model' },
-  { value: 'gpt-oss', label: 'GPT-oss-120b', description: 'Open source' },
-  { value: 'groq', label: 'Kimi K2', description: 'Good for coding - chinese model hai' },
-  { value: 'qwen', label: 'Qwen coder', description: 'Good for coding - chinese model hai' },
-  { value: 'claude', label: 'Claude-sonnet-4', description: 'Name toh suna hoga' }
+  {
+    value: "gpt-oss",
+    label: "Chat GPT",
+    description: "Open AI's model",
+  },
+  {
+    value: "gemini",
+    label: "Gemini",
+    description: "Google's advanced AI model",
+  },
+  {
+    value: "groq",
+    label: "Kimi K2",
+    description: "Good for coding - chinese model hai",
+  },
+  {
+    value: "qwen",
+    label: "Qwen coder",
+    description: "Good for coding - chinese model hai",
+  },
+  {
+    value: "claude",
+    label: "Claude-sonnet-4",
+    description: "Name toh suna hoga",
+  },
 ];
 
-const CodeBlockWithCopy: React.FC<{ code: string; language: string; className?: string }> = ({ code, language, className }) => {
+const CodeBlockWithCopy: React.FC<{
+  code: string;
+  language: string;
+  className?: string;
+}> = ({ code, language, className }) => {
   const [copied, setCopied] = useState(false);
-  
+
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(code);
@@ -57,47 +95,57 @@ const CodeBlockWithCopy: React.FC<{ code: string; language: string; className?: 
       /* ignore */
     }
   };
-  
+
   return (
-    <div className="relative group w-full my-2 max-w-full overflow-x-auto rounded-lg bg-gray-900" style={{ WebkitOverflowScrolling: 'touch' }}>
-      <button 
-        onClick={copyToClipboard} 
-        className="absolute top-2 right-2 z-20 p-1.5 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white rounded-md transition-all duration-200 flex items-center gap-1 text-xs"
+    <div
+      className="relative group w-full my-2 max-w-full overflow-x-auto bg-gray-900 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+      style={{ WebkitOverflowScrolling: "touch" }}
+    >
+      <button
+        onClick={copyToClipboard}
+        className="absolute top-2 right-2 z-20 p-2 bg-cyan-400 hover:bg-cyan-300 text-black font-bold border-2 border-black transition-all flex items-center gap-1 text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
         title="Copy code"
       >
-        {copied ? <FiCheck size={14} /> : <FiCopy size={14} />}
-        <span className="hidden xs:inline text-xs">
+        {copied ? (
+          <FiCheck size={14} strokeWidth={3} />
+        ) : (
+          <FiCopy size={14} strokeWidth={3} />
+        )}
+        <span className="hidden xs:inline text-xs uppercase">
           {copied ? "Copied!" : "Copy"}
         </span>
       </button>
-      <div className="w-full overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
-        <SyntaxHighlighter 
-          style={vscDarkPlus} 
-          language={language} 
-          PreTag="div" 
+      <div
+        className="w-full overflow-x-auto"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        <SyntaxHighlighter
+          style={vscDarkPlus}
+          language={language}
+          PreTag="div"
           className="!bg-transparent !p-2 !m-0 text-xs md:!p-3"
           customStyle={{
             margin: 0,
-            padding: '0.5rem',
-            background: 'transparent',
-            fontSize: '0.75rem',
-            lineHeight: '1.3',
-            fontFamily: 'ui-monospace, SFMono-Regular, Consolas, monospace',
-            minWidth: '100%',
-            width: 'auto',
-            overflowX: 'auto',
-            whiteSpace: 'pre',
-            wordBreak: 'break-word',
+            padding: "0.5rem",
+            background: "transparent",
+            fontSize: "0.75rem",
+            lineHeight: "1.3",
+            fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace",
+            minWidth: "100%",
+            width: "auto",
+            overflowX: "auto",
+            whiteSpace: "pre",
+            wordBreak: "break-word",
           }}
           codeTagProps={{
             style: {
-              fontSize: '0.75rem',
-              lineHeight: '1.3',
-              fontFamily: 'ui-monospace, SFMono-Regular, Consolas, monospace',
-              whiteSpace: 'pre',
-              display: 'block',
-              wordBreak: 'break-word',
-            }
+              fontSize: "0.75rem",
+              lineHeight: "1.3",
+              fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace",
+              whiteSpace: "pre",
+              display: "block",
+              wordBreak: "break-word",
+            },
           }}
         >
           {code}
@@ -107,9 +155,15 @@ const CodeBlockWithCopy: React.FC<{ code: string; language: string; className?: 
   );
 };
 
-const MarkdownMessage: React.FC<{ content: string; isUser: boolean }> = ({ content, isUser }) => {
-  if (isUser) return <div className="whitespace-pre-wrap break-words">{content}</div>;
-  
+const MarkdownMessage: React.FC<{ content: string; isUser: boolean }> = ({
+  content,
+  isUser,
+}) => {
+  if (isUser)
+    return (
+      <div className="whitespace-pre-wrap break-words font-bold">{content}</div>
+    );
+
   const components: Components = {
     code({ node, inline, className, children, ...props }: any) {
       const match = /language-(\w+)/.exec(className || "");
@@ -120,46 +174,79 @@ const MarkdownMessage: React.FC<{ content: string; isUser: boolean }> = ({ conte
         </div>
       ) : (
         <code
-          className="bg-gray-200 px-1 py-0.5 rounded font-mono text-xs break-all whitespace-pre-wrap"
+          className="bg-yellow-200 px-1.5 py-0.5 border-2 border-black font-mono text-xs font-bold break-all whitespace-pre-wrap"
           {...props}
         >
           {children}
         </code>
       );
     },
-    h1: ({ children }) => <h1 className="text-xl font-bold text-gray-800 mt-4 mb-2 break-words">{children}</h1>,
-    h2: ({ children }) => <h2 className="text-lg font-semibold text-gray-800 mt-4 mb-2 break-words">{children}</h2>,
-    h3: ({ children }) => <h3 className="text-base font-semibold text-gray-800 mt-3 mb-2 break-words">{children}</h3>,
-    ul: ({ children }) => <ul className="list-disc list-inside space-y-1 my-2 break-words">{children}</ul>,
-    ol: ({ children }) => <ol className="list-decimal list-inside space-y-1 my-2 break-words">{children}</ol>,
-    li: ({ children }) => <li className="text-gray-700 break-words">{children}</li>,
-    blockquote: ({ children }) => <blockquote className="border-l-4 border-purple-300 pl-4 italic text-gray-600 my-2 break-words">{children}</blockquote>,
+    h1: ({ children }) => (
+      <h1 className="text-xl font-black text-black mt-4 mb-2 break-words uppercase">
+        {children}
+      </h1>
+    ),
+    h2: ({ children }) => (
+      <h2 className="text-lg font-black text-black mt-4 mb-2 break-words uppercase">
+        {children}
+      </h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="text-base font-black text-black mt-3 mb-2 break-words uppercase">
+        {children}
+      </h3>
+    ),
+    ul: ({ children }) => (
+      <ul className="list-disc list-inside space-y-1 my-2 break-words font-bold">
+        {children}
+      </ul>
+    ),
+    ol: ({ children }) => (
+      <ol className="list-decimal list-inside space-y-1 my-2 break-words font-bold">
+        {children}
+      </ol>
+    ),
+    li: ({ children }) => (
+      <li className="text-black break-words font-medium">{children}</li>
+    ),
+    blockquote: ({ children }) => (
+      <blockquote className="border-l-4 border-black pl-4 font-bold italic text-black my-2 break-words bg-pink-100 py-2">
+        {children}
+      </blockquote>
+    ),
     a: ({ children, href }) => (
-      <a 
-        href={href} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className="text-purple-600 underline hover:text-purple-800 hover:bg-purple-50 transition-all duration-200 px-1 py-0.5 rounded-md font-medium"
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-black underline decoration-4 decoration-cyan-400 hover:bg-cyan-400 transition-all duration-200 px-1 py-0.5 font-black"
       >
         {children}
       </a>
     ),
+    p: ({ children }) => (
+      <p className="mb-2 font-medium text-black">{children}</p>
+    ),
+    strong: ({ children }) => (
+      <strong className="font-black text-black">{children}</strong>
+    ),
   };
-  
+
   return (
-    <div className="prose prose-sm max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-strong:text-gray-800 prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm overflow-hidden">
+    <div className="prose prose-sm max-w-none overflow-hidden">
       <ReactMarkdown components={components}>{content}</ReactMarkdown>
     </div>
   );
 };
 
-/* ---------- MessageCopyButton ---------- */
-const MessageCopyButton: React.FC<{ text: string; isAssistant: boolean }> = ({ text, isAssistant }) => {
+const MessageCopyButton: React.FC<{ text: string; isAssistant: boolean }> = ({
+  text,
+  isAssistant,
+}) => {
   const [copied, setCopied] = useState(false);
-  
-  // Don't show copy button for user messages
+
   if (!isAssistant) return null;
-  
+
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(text);
@@ -169,68 +256,81 @@ const MessageCopyButton: React.FC<{ text: string; isAssistant: boolean }> = ({ t
       /* ignore */
     }
   };
-  
+
   return (
     <button
       onClick={copy}
-      className="text-gray-400 hover:text-purple-600 transition-colors p-1.5 rounded-md hover:bg-purple-50 flex items-center gap-1"
+      className="bg-white border-2 border-black px-2 py-1 text-black font-bold uppercase text-xs hover:bg-yellow-100 transition-all flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
       aria-label="Copy message"
       title="Copy response"
     >
       {copied ? (
         <>
-          <FiCheck size={14} className="text-green-600" />
-          <span className="text-xs text-green-600">Copied!</span>
+          <FiCheck size={14} strokeWidth={3} className="text-green-600" />
+          <span className="text-green-600">COPIED!</span>
         </>
       ) : (
         <>
-          <FiCopy size={14} />
-          <span className="text-xs">Copy</span>
+          <FiCopy size={14} strokeWidth={3} />
+          <span>COPY</span>
         </>
       )}
     </button>
   );
 };
 
-/* ---------- ModelSelector ---------- */
-const ModelSelector: React.FC<{ selectedModel: ModelType; onModelChange: (model: ModelType) => void }> = ({ 
-  selectedModel, 
-  onModelChange 
-}) => {
+const ModelSelector: React.FC<{
+  selectedModel: ModelType;
+  onModelChange: (model: ModelType) => void;
+}> = ({ selectedModel, onModelChange }) => {
   const [isOpen, setIsOpen] = useState(false);
-  
-  const selectedOption = modelOptions.find(option => option.value === selectedModel)!;
-  
+
+  const selectedOption = modelOptions.find(
+    (option) => option.value === selectedModel
+  )!;
+
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-lg hover:bg-white transition-colors text-sm"
+        className="flex items-center gap-2 px-1 py-2 bg-cyan-300 border-4 border-black font-black uppercase text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
       >
-        <span className="font-medium text-gray-700">{selectedOption.label}</span>
-        <FiChevronDown size={16} className={`text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="text-black">{selectedOption.label}</span>
+        <FiChevronDown
+          size={16}
+          strokeWidth={3}
+          className={`text-black transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
       </button>
-      
+
       {isOpen && (
         <>
-          <div 
-            className="fixed inset-0 z-10" 
+          <div
+            className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute top-full right-0 mt-1 w-64 bg-white rounded-lg border border-purple-200 shadow-lg z-20 overflow-hidden">
-            {modelOptions.map(option => (
+          <div className="absolute top-full right-0 mt-2 w-64 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-20 overflow-hidden">
+            {modelOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => {
                   onModelChange(option.value);
                   setIsOpen(false);
                 }}
-                className={`w-full text-left px-4 py-3 hover:bg-purple-50 transition-colors ${
-                  selectedModel === option.value ? 'bg-purple-100 border-l-4 border-purple-500' : ''
+                className={`w-full text-left px-4 py-3 hover:bg-yellow-100 transition-colors border-b-2 border-black last:border-b-0 ${
+                  selectedModel === option.value
+                    ? "bg-cyan-200 border-l-4 border-l-black"
+                    : ""
                 }`}
               >
-                <div className="font-medium text-gray-800">{option.label}</div>
-                <div className="text-xs text-gray-600 mt-0.5">{option.description}</div>
+                <div className="font-black text-black uppercase text-sm">
+                  {option.label}
+                </div>
+                <div className="text-xs text-black/70 font-bold mt-0.5">
+                  {option.description}
+                </div>
               </button>
             ))}
           </div>
@@ -240,26 +340,32 @@ const ModelSelector: React.FC<{ selectedModel: ModelType; onModelChange: (model:
   );
 };
 
-/* ---------- Main ChatApp ---------- */
 const ChatApp: React.FC = () => {
   const router = useRouter();
   const { user, session, signOut } = useAuth();
-  const { remainingChats, isLimitReached, incrementChatCount, resetChatCount } = useChatLimit();
-  
+  const { remainingChats, isLimitReached, incrementChatCount, resetChatCount } =
+    useChatLimit();
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  // Like/dislike state: { [messageId]: 'like' | 'dislike' | null }
-  const [feedback, setFeedback] = useState<{ [id: string]: 'like' | 'dislike' | null }>({});
+  const [feedback, setFeedback] = useState<{
+    [id: string]: "like" | "dislike" | null;
+  }>({});
   const [inputValue, setInputValue] = useState("");
-  // Word count helper
-  const getWordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
+
+  const getWordCount = (text: string) =>
+    text.trim().split(/\s+/).filter(Boolean).length;
   const wordCount = getWordCount(inputValue);
   const maxWords = 300;
 
-  const [selectedPersona, setSelectedPersona] = useState<PersonaData | null>(null);
-  const [selectedModel, setSelectedModel] = useState<ModelType>('gemini');
+  const [selectedPersona, setSelectedPersona] = useState<PersonaData | null>(
+    null
+  );
+  const [selectedModel, setSelectedModel] = useState<ModelType>("gemini");
   const [conversations, setConversations] = useState<any[]>([]);
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  const [activeConversationId, setActiveConversationId] = useState<
+    string | null
+  >(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -267,57 +373,66 @@ const ChatApp: React.FC = () => {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  /* ---- Auth & initial load ---- */
   const fetchUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     return user;
   };
 
   const loadConversations = useCallback(async (userId: string) => {
     const { data, error } = await supabase
-      .from('conversations')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
+      .from("conversations")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
     if (!error && data) setConversations(data);
   }, []);
 
   const loadMessages = useCallback(async (conversationId: string) => {
     const { data, error } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true });
+      .from("messages")
+      .select("*")
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: true });
     if (!error && data) {
-      setMessages(data.map((m: any) => ({ id: m.id, role: m.role as "user" | "assistant", content: m.content })));
+      setMessages(
+        data.map((m: any) => ({
+          id: m.id,
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        }))
+      );
     }
   }, []);
 
   useEffect(() => {
-    const stored = localStorage.getItem('selectedPersona');
+    const stored = localStorage.getItem("selectedPersona");
     if (stored) {
-      try { setSelectedPersona(JSON.parse(stored)); } catch { /* ignore */ }
+      try {
+        setSelectedPersona(JSON.parse(stored));
+      } catch {
+        /* ignore */
+      }
     }
-    
-    // Load selected model from localStorage
-    const storedModel = localStorage.getItem('selectedModel') as ModelType;
-    if (storedModel && modelOptions.some(option => option.value === storedModel)) {
+
+    const storedModel = localStorage.getItem("selectedModel") as ModelType;
+    if (
+      storedModel &&
+      modelOptions.some((option) => option.value === storedModel)
+    ) {
       setSelectedModel(storedModel);
     }
   }, []);
 
-  // On first mount, load conversations but don't clear messages unless necessary
   useEffect(() => {
     (async () => {
       if (!user) return;
       await loadConversations(user.id);
-      // Only clear messages if there's no active conversation
       if (!activeConversationId) {
         setMessages([]);
       }
     })();
-    // Only run on mount (user or loadConversations change)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, loadConversations]);
 
   useEffect(() => {
@@ -330,126 +445,158 @@ const ChatApp: React.FC = () => {
     }
   }, [user, resetChatCount]);
 
-  useEffect(() => { 
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  /* Responsive handling */
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       if (!mobile) {
         setMobileSidebarOpen(false);
-        // For non-users on desktop, keep sidebar closed by default
         if (!user) {
           setSidebarOpen(false);
         }
       }
     };
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [user]);
 
-  /* ---- Model change handler ---- */
   const handleModelChange = (model: ModelType) => {
     setSelectedModel(model);
-    localStorage.setItem('selectedModel', model);
+    localStorage.setItem("selectedModel", model);
   };
 
-  /* ---- Save helpers ---- */
   const upsertConversation = async (title: string, personaKey: string) => {
     if (!user) return null;
     const { data, error } = await supabase
-      .from('conversations')
+      .from("conversations")
       .insert({ user_id: user.id, title, persona_key: personaKey })
       .select()
       .single();
-    if (error) { console.error(error); return null; }
+    if (error) {
+      console.error(error);
+      return null;
+    }
     return data.id;
   };
 
-  const saveMessage = async (conversationId: string, role: "user" | "assistant", content: string) => {
+  const saveMessage = async (
+    conversationId: string,
+    role: "user" | "assistant",
+    content: string
+  ) => {
     if (user) {
-      await supabase.from('messages').insert({ conversation_id: conversationId, role, content });
+      await supabase
+        .from("messages")
+        .insert({ conversation_id: conversationId, role, content });
     }
   };
 
-  /* ---- Send message ---- */
-const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
-  e.preventDefault();
-  if (!inputValue.trim() || isLoading || !selectedPersona) return;
+  const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim() || isLoading || !selectedPersona) return;
 
-  // Check limit BEFORE processing
-  if (!user && isLimitReached) {
-    router.push('/login');
-    return;
-  }
+    if (!user && isLimitReached) {
+      router.push("/login");
+      return;
+    }
     if (!user) {
-    incrementChatCount();
-  }
-
-    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: inputValue };
-    setMessages(prev => [...prev, userMsg]);
-
-  let convId = activeConversationId;
-  if (!convId && user) {
-    convId = await upsertConversation(inputValue.slice(0, 50), selectedPersona.key);
-    if (!convId) return;
-    setActiveConversationId(convId);
-    setConversations(prev => [{ id: convId, title: inputValue.slice(0, 50), persona_key: selectedPersona.key, created_at: new Date().toISOString() }, ...prev]);
-  }
-  
-  if (convId) {
-    await saveMessage(convId, "user", inputValue);
-  }
-
-  const assistantMsg: Message = { id: crypto.randomUUID(), role: "assistant", content: "" };
-  setMessages(prev => [...prev, assistantMsg]);
-  
-  // Clear input immediately for better UX
-  setInputValue("");
-  setIsLoading(true);
-
-  try {
-    // Dynamic API endpoint based on selected model
-    const apiEndpoint = `/api/${selectedModel}`;
-    
-    const response = await fetch(apiEndpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: [...messages, userMsg].map(m => ({ role: m.role, content: m.content })),
-        personaInfo: selectedPersona,
-      }),
-    });
-    
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    
-    const reader = response.body!.getReader();
-    const decoder = new TextDecoder();
-    let acc = "";
-    
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      acc += decoder.decode(value, { stream: true });
-      setMessages(prev => prev.map(m => m.id === assistantMsg.id ? { ...m, content: acc } : m));
+      incrementChatCount();
     }
-    
+
+    const userMsg: Message = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: inputValue,
+    };
+    setMessages((prev) => [...prev, userMsg]);
+
+    let convId = activeConversationId;
+    if (!convId && user) {
+      convId = await upsertConversation(
+        inputValue.slice(0, 50),
+        selectedPersona.key
+      );
+      if (!convId) return;
+      setActiveConversationId(convId);
+      setConversations((prev) => [
+        {
+          id: convId,
+          title: inputValue.slice(0, 50),
+          persona_key: selectedPersona.key,
+          created_at: new Date().toISOString(),
+        },
+        ...prev,
+      ]);
+    }
+
     if (convId) {
-      await saveMessage(convId, "assistant", acc);
+      await saveMessage(convId, "user", inputValue);
     }
-  } catch (err) {
-    console.error(err);
-    setMessages(prev => prev.map(m => m.id === assistantMsg.id ? { ...m, content: "Sorry, something went wrong." } : m));
-  } finally {
-    setIsLoading(false);
-  }
-};
 
-  /* ---- UI helpers ---- */
+    const assistantMsg: Message = {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      content: "",
+    };
+    setMessages((prev) => [...prev, assistantMsg]);
+
+    setInputValue("");
+    setIsLoading(true);
+
+    try {
+      const apiEndpoint = `/api/${selectedModel}`;
+
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [...messages, userMsg].map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+          personaInfo: selectedPersona,
+        }),
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const reader = response.body!.getReader();
+      const decoder = new TextDecoder();
+      let acc = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        acc += decoder.decode(value, { stream: true });
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMsg.id ? { ...m, content: acc } : m
+          )
+        );
+      }
+
+      if (convId) {
+        await saveMessage(convId, "assistant", acc);
+      }
+    } catch (err) {
+      console.error(err);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantMsg.id
+            ? { ...m, content: "Sorry, something went wrong." }
+            : m
+        )
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleNewChat = async () => {
     setMessages([]);
     setActiveConversationId(null);
@@ -463,14 +610,14 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
   };
 
   const handleDeleteConversation = async (id: string) => {
-    await supabase.from('conversations').delete().eq('id', id);
-    setConversations(prev => prev.filter(c => c.id !== id));
+    await supabase.from("conversations").delete().eq("id", id);
+    setConversations((prev) => prev.filter((c) => c.id !== id));
     if (activeConversationId === id) handleNewChat();
   };
 
   const handleBackToPersonas = () => {
-    localStorage.removeItem('selectedPersona');
-    router.push('/persona');
+    localStorage.removeItem("selectedPersona");
+    router.push("/persona");
   };
 
   const handleSignOut = async () => {
@@ -482,9 +629,9 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
 
   const toggleSidebar = () => {
     if (isMobile) {
-      setMobileSidebarOpen(prev => !prev);
+      setMobileSidebarOpen((prev) => !prev);
     } else {
-      setSidebarOpen(prev => !prev);
+      setSidebarOpen((prev) => !prev);
     }
   };
 
@@ -492,390 +639,297 @@ const handleSendMessage = async (e: React.FormEvent | React.MouseEvent) => {
     setMobileSidebarOpen(false);
   };
 
-  /* -------------  RENDER  ------------- */
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-slate-50 to-purple-50">
+    <div className="flex flex-col h-screen bg-yellow-50 font-sans">
       <ChatLimitBanner />
 
-      <div className="p-4 bg-white/80 backdrop-blur-sm border-b border-purple-100 flex items-center justify-between sticky top-0 z-50">
-        {/* Only show sidebar toggle for logged-in users or on desktop */}
+      {/* Header */}
+      <div className="p-3 md:p-4 bg-white border-b-4 border-black flex items-center justify-between sticky top-0 z-50 shadow-sm">
         {(user || !isMobile) && (
           <button
             onClick={toggleSidebar}
-            className="p-2 rounded-lg bg-purple-100 text-purple-700"
+            className="p-2 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all text-black"
             aria-label="Toggle sidebar"
           >
-            {isMobile ? (mobileSidebarOpen ? <FiX size={20} /> : <FiMenu size={20} />) : (sidebarOpen ? <FiChevronLeft size={20} /> : <FiChevronRight size={20} />)}
+            {isMobile ? (
+              mobileSidebarOpen ? (
+                <FiX size={20} strokeWidth={3} />
+              ) : (
+                <FiMenu size={20} strokeWidth={3} />
+              )
+            ) : sidebarOpen ? (
+              <FiChevronLeft size={20} strokeWidth={3} />
+            ) : (
+              <FiChevronRight size={20} strokeWidth={3} />
+            )}
           </button>
         )}
-        {/* For non-logged-in mobile users, show a spacer or back button */}
         {!user && isMobile && (
           <button
             onClick={handleBackToPersonas}
-            className="p-2 rounded-lg bg-purple-100 text-purple-700"
+            className="p-2 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
             aria-label="Back to personas"
           >
-            <FiArrowLeft size={20} />
+            <FiArrowLeft size={20} strokeWidth={3} />
           </button>
         )}
-        
-    <div
-      className="flex-1 flex items-center justify-center">
-          <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent truncate">
-            {selectedPersona ? selectedPersona.name : 'Chhaya Persona'}
+
+        <div className="flex-1 flex items-center justify-center">
+          <h1 className="text-mb md:text-2xl font-black uppercase tracking-tighter text-black truncate">
+            {selectedPersona ? selectedPersona.name : "Chhaya Persona"}
           </h1>
         </div>
-        
-        {/* Model selector and user actions */}
-      <div className="flex items-center gap-2">
-        <ModelSelector 
-          selectedModel={selectedModel} 
-          onModelChange={handleModelChange} 
-        />
+
+        <div className="flex items-center gap-2">
+          <ModelSelector
+            selectedModel={selectedModel}
+            onModelChange={handleModelChange}
+          />
+        </div>
       </div>
-      </div>
+
       <div className="flex flex-1 min-h-0">
-        {/* Desktop Sidebar */}
-        <aside
-          className={`hidden md:flex flex-col z-30 overflow-hidden
-            ${sidebarOpen ? 'w-72' : 'w-0'} transition-[width] duration-300 ease-in-out
-            bg-white/80 backdrop-blur-sm border-r border-purple-100 shadow-lg`}
-        >
-          <div className="flex-1 flex flex-col min-h-0">
-            <div className="p-6 flex-shrink-0">
-              <div className="mb-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                    <img src="favicon.ico" alt="Logo" className="rounded" />
-                  </div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent cursor-pointer"
-                  onClick={() => router.push('/')}>
-                    Chhaya Persona
-                  </h1>
-                </div>
-                {selectedPersona && (
-                  <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100">
-                    <div className="flex items-center gap-3 mb-2">
-                      <img src={selectedPersona.image} alt={selectedPersona.name} className="w-10 h-10 rounded-full object-cover border-2 border-purple-200" />
-                      <div>
-                        <h3 className="font-bold text-gray-900 text-sm">{selectedPersona.name}</h3>
-                        <p className="text-xs text-purple-600">{selectedPersona.role}</p>
-                      </div>
-                    </div>
-                    <button onClick={handleBackToPersonas} className="flex items-center gap-1 text-xs text-gray-600 hover:text-purple-600 transition-colors">
-                      <FiArrowLeft size={12} />
-                      <span>Change Persona</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <button onClick={handleNewChat} className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-4 rounded-xl mb-6 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 cursor-pointer">
-                <FiPlus className="text-lg" /> New chat
-              </button>
-            </div>
-
-            {user && (
-              <>
-                <div className="flex-1 min-h-0 px-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center gap-2">
-                      <FiMessageSquare className="text-purple-600" />
-                      <p className="text-gray-700 font-semibold">Conversations</p>
-                    </div>
-                  </div>
-                  <div className="overflow-y-auto flex-1 min-h-0 max-h-[45vh] pr-1">
-                    <ul className="space-y-2 pb-6">
-                      {conversations.map(c => (
-                        <li
-                          key={c.id}
-                          className={`flex items-center justify-between text-gray-600 hover:bg-purple-50 p-3 rounded-lg cursor-pointer border border-transparent hover:border-purple-200 transition-colors ${activeConversationId === c.id ? 'bg-purple-50 border-purple-200' : ''}`}
-                          onClick={() => handleSelectConversation(c.id)}
-                        >
-                          <span className="truncate flex-1">{c.title}</span>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleDeleteConversation(c.id); }}
-                            className="text-gray-400 hover:text-red-500 p-1 rounded transition-colors"
-                          >
-                            <FiTrash2 size={16} />
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                <div className="pb-4 pr-2 pl-2 border-purple-500 flex-shrink-0">
-                  <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-4 border border-green-300">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
-                        <FiUser className="text-white text-sm" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-900 text-sm">
-                          {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
-                        </h3>
-                        <p className="text-xs text-green-600">Premium Member</p>
-                      </div>
-                    </div>
-                    <p className="text-xs text-gray-600 mb-3">Unlimited chats & history</p>
-                    <button
-                      onClick={handleSignOut}
-                      className="w-full bg-green-400 hover:bg-green-200 text-gray-800 py-2 px-3 rounded-lg text-xs font-medium transition-colors border border-gray-200"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* Sign in prompt for non-logged-in users */}
-            {!user && (
-              <div className="p-6 border-t border-purple-100 flex-shrink-0">
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100">
-                  <h3 className="font-bold text-gray-900 text-sm mb-2">Sign in for more</h3>
-                  <p className="text-xs text-gray-600 mb-3">Save conversations, unlimited chats, and more features</p>
-                  <button
-                    onClick={() => router.push('/login')}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-2 px-3 rounded-lg text-xs font-medium transition-colors"
-                  >
-                    Sign In
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </aside>
-
-        {/* Mobile Sidebar - Only show for logged-in users */}
-        {user && (
-          <div className={`md:hidden fixed inset-y-0 left-0 z-40 w-72 transform ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out bg-white/95 backdrop-blur-sm border-r border-purple-100 shadow-lg`}>
-            <div className="p-4 flex items-center justify-between border-b border-purple-100">
-              <h2 className="font-bold text-purple-700">Chhaya Persona</h2>
-              <button onClick={() => setMobileSidebarOpen(false)} className="p-2 rounded-lg bg-purple-100 text-purple-700" aria-label="Close sidebar">
-                <FiX size={20} />
-              </button>
-            </div>
-
-            <div className="flex-1 flex flex-col min-h-0">
-              <div className="p-4">
-                {selectedPersona && (
-                  <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100 mb-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <img src={selectedPersona.image} alt={selectedPersona.name} className="w-10 h-10 rounded-full object-cover border-2 border-purple-200" />
-                      <div>
-                        <h3 className="font-bold text-gray-900 text-sm leading-tight">{selectedPersona.name}</h3>
-                        <p className="text-xs text-purple-600 mt-0.5">{selectedPersona.role}</p>
-                      </div>
-                    </div>
-                    <button onClick={handleBackToPersonas} className="flex items-center gap-1 text-xs text-gray-700 hover:text-purple-600 transition-colors">
-                      <FiArrowLeft size={12} />
-                      <span>Change Persona</span>
-                    </button>
-                  </div>
-                )}
-
-                <button onClick={handleNewChat} className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 px-3 rounded-xl mb-4">
-                  <FiPlus /> New chat
-                </button>
-
-                <p className="text-gray-800 font-semibold mb-2">Conversations</p>
-                <div className="space-y-2 max-h-[45vh] overflow-y-auto mb-4">
-                  {conversations.map(c => (
-                    <div
-                      key={c.id}
-                      className={`flex items-center justify-between p-3 rounded-lg hover:bg-purple-50 ${activeConversationId === c.id ? 'bg-purple-50' : ''}`}
-                      onClick={() => handleSelectConversation(c.id)}
-                    >
-                      <span className="truncate flex-1 text-gray-800 leading-tight">{c.title}</span>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleDeleteConversation(c.id); }}
-                        className="text-gray-500 hover:text-red-500 p-1 rounded"
-                        aria-label="Delete conversation"
-                      >
-                        <FiTrash2 size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-3 border border-green-300">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
-                      <FiUser className="text-white text-sm" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900 text-sm leading-tight">{user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}</h3>
-                      <p className="text-xs text-green-600">Premium Member</p>
-                    </div>
-                  </div>
-                  <button onClick={handleSignOut} className="w-full bg-white py-2 px-3 rounded-lg text-xs font-medium border border-gray-200 mt-2 text-gray-700">
-                    Sign Out
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {mobileSidebarOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-30" onClick={closeMobileSidebar} />}
+        {/* Sidebar */}
+        <ChatSidebar
+          isOpen={isMobile ? mobileSidebarOpen : sidebarOpen}
+          isMobile={isMobile}
+          selectedPersona={selectedPersona}
+          conversations={conversations}
+          activeConversationId={activeConversationId}
+          user={user}
+          onNewChat={handleNewChat}
+          onSelectConversation={handleSelectConversation}
+          onDeleteConversation={handleDeleteConversation}
+          onBackToPersonas={handleBackToPersonas}
+          onSignOut={handleSignOut}
+          onClose={closeMobileSidebar}
+        />
 
         {/* Main Chat Area */}
-<div className="flex-1 flex flex-col min-h-0">
-  <div className="flex-1 overflow-y-auto">
-    <div className="p-2 md:p-6 w-full min-w-0">
-      <div className="max-w-4xl mx-auto space-y-4 md:space-y-6 w-full min-w-0">
-        {messages.length === 0 && (
-          <div className="text-center mt-10 md:mt-20">
-            <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent mb-4">
-              {selectedPersona ? `Chat with ${selectedPersona.name}` : 'Welcome to Chhaya Persona'}
-            </h2>
-            {selectedPersona && (
-              <div className="max-w-2xl mx-auto">
-                <p className="text-gray-600 text-base md:text-lg mb-6">You're now chatting with {selectedPersona.name}, {selectedPersona.role}</p>
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-purple-100 p-4 md:p-6 mb-8">
-                  <p className="text-gray-700 leading-relaxed">{selectedPersona.personality}</p>
-                </div>
-              </div>
-            )}
-            <div className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-              <div className="p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-100 hover:shadow-md transition-shadow cursor-pointer">
-                <h3 className="font-semibold text-purple-700 mb-2">💡 Ask me anything</h3>
-                <p className="text-sm text-gray-600">I can help with coding, writing, analysis, and more</p>
-              </div>
-              <div className="p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-100 hover:shadow-md transition-shadow cursor-pointer">
-                <h3 className="font-semibold text-purple-700 mb-2">🚀 Get started</h3>
-                <p className="text-sm text-gray-600">Try asking about a project or problem you're working on</p>
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-2 md:p-6 w-full min-w-0">
+              <div className="max-w-4xl mx-auto space-y-4 md:space-y-6 w-full min-w-0">
+                {messages.length === 0 && (
+                  <div className="text-center mt-10 md:mt-20">
+                    <h2 className="text-3xl md:text-5xl font-black text-black uppercase tracking-tighter mb-4">
+                      {selectedPersona
+                        ? `Chat with ${selectedPersona.name}`
+                        : "Welcome to Chhaya Persona"}
+                    </h2>
+                    {selectedPersona && (
+                      <div className="max-w-2xl mx-auto">
+                        <p className="text-black font-bold text-base md:text-lg mb-6">
+                          You're now chatting with {selectedPersona.name},{" "}
+                          {selectedPersona.role}
+                        </p>
+                        <div className="bg-white border-4 border-black p-4 md:p-6 mb-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                          <p className="text-black font-medium leading-relaxed">
+                            {selectedPersona.personality}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex gap-2 md:gap-3 ${
+                      msg.role === "user" ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    {msg.role === "assistant" && (
+                      <div className="w-8 h-8 bg-black border-2 border-black flex items-center justify-center flex-shrink-0 mt-1">
+                        {selectedPersona?.image ? (
+                          <img
+                            src={selectedPersona.image}
+                            alt={selectedPersona.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <img
+                            src="/favicon.ico"
+                            alt="Logo"
+                            className="w-5 h-5"
+                          />
+                        )}
+                      </div>
+                    )}
+                    <div
+                      className={`max-w-[90vw] md:max-w-[85%] px-4 py-3 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
+                        msg.role === "user"
+                          ? "bg-green-400 text-black"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      <div
+                        className="w-full overflow-x-auto"
+                        style={{ WebkitOverflowScrolling: "touch" }}
+                      >
+                        <MarkdownMessage
+                          content={msg.content}
+                          isUser={msg.role === "user"}
+                        />
+                      </div>
+                      {msg.role === "assistant" &&
+                        msg.content === "" &&
+                        isLoading && (
+                          <div className="flex space-x-1 py-2">
+                            <div className="w-3 h-3 bg-black rounded-full animate-bounce"></div>
+                            <div
+                              className="w-3 h-3 bg-black rounded-full animate-bounce"
+                              style={{ animationDelay: "0.2s" }}
+                            ></div>
+                            <div
+                              className="w-3 h-3 bg-black rounded-full animate-bounce"
+                              style={{ animationDelay: "0.4s" }}
+                            ></div>
+                          </div>
+                        )}
+                      {msg.content && (
+                        <div
+                          className={`flex ${
+                            msg.role === "user"
+                              ? "justify-end"
+                              : "justify-start"
+                          } mt-2 items-center gap-2 flex-wrap`}
+                        >
+                          <MessageCopyButton
+                            text={msg.content}
+                            isAssistant={msg.role === "assistant"}
+                          />
+                          {msg.role === "assistant" && (
+                            <div className="flex gap-1">
+                              <button
+                                aria-label="Like"
+                                className={`p-1.5 border-2 border-black ${
+                                  feedback[msg.id] === "like"
+                                    ? "bg-green-400"
+                                    : "bg-white"
+                                } hover:bg-green-200 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]`}
+                                onClick={() =>
+                                  setFeedback((f) => ({
+                                    ...f,
+                                    [msg.id]:
+                                      f[msg.id] === "like" ? null : "like",
+                                  }))
+                                }
+                              >
+                                <FiThumbsUp size={16} strokeWidth={3} />
+                              </button>
+                              <button
+                                aria-label="Dislike"
+                                className={`p-1.5 border-2 border-black ${
+                                  feedback[msg.id] === "dislike"
+                                    ? "bg-red-400"
+                                    : "bg-white"
+                                } hover:bg-red-200 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]`}
+                                onClick={() =>
+                                  setFeedback((f) => ({
+                                    ...f,
+                                    [msg.id]:
+                                      f[msg.id] === "dislike"
+                                        ? null
+                                        : "dislike",
+                                  }))
+                                }
+                              >
+                                <FiThumbsDown size={16} strokeWidth={3} />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {msg.role === "user" && (
+                      <div className="w-8 h-8 bg-black border-2 border-black flex items-center justify-center flex-shrink-0 mt-1">
+                        <FiUser
+                          className="text-white text-sm"
+                          strokeWidth={3}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
               </div>
             </div>
           </div>
-        )}
-{messages.map(msg => (
-  <div key={msg.id} className={`flex gap-2 md:gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-    {msg.role === "assistant" && (
-      <div className="w-6 h-6 bg-black rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-        {selectedPersona?.image ? (
-          <img 
-            src={selectedPersona.image} 
-            alt={selectedPersona.name} 
-            className="w-6 h-6 rounded-lg object-cover" 
-          />
-        ) : (
-          <img src="favicon.ico" alt="Logo" className="w-4 h-4" />
-        )}
-      </div>
-    )}
-    <div className={`max-w-[90vw] md:max-w-[85%] rounded-xl px-2 py-2 md:px-3 ${msg.role === "user" 
-        ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-tr-sm" 
-        : "bg-white text-gray-800 rounded-tl-sm border border-gray-200"}`}
-    >
-      <div className="w-full overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
-        <MarkdownMessage content={msg.content} isUser={msg.role === "user"} />
-      </div>
-      {msg.role === "assistant" && msg.content === "" && isLoading && (
-        <div className="flex space-x-1 py-2">
-          <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
-          <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-          <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
-        </div>
-      )}
-      {msg.content && (
-        <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mt-2 items-center gap-2`}>
-          <MessageCopyButton text={msg.content} isAssistant={msg.role === "assistant"} />
-          {/* Like/Dislike buttons for assistant messages */}
-          {msg.role === "assistant" && (
-            <div className="flex gap-1 ml-2">
-              <button
-                aria-label="Like"
-                className={`p-1 rounded-full border ${feedback[msg.id] === 'like' ? 'bg-green-100 border-green-400 text-green-600' : 'bg-gray-100 text-gray-400'} hover:bg-green-50 transition-colors`}
-                onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id] === 'like' ? null : 'like' }))
-}
-              >
-                <FiThumbsUp size={16} />
-              </button>
-              <button
-                aria-label="Dislike"
-                className={`p-1 rounded-full border ${feedback[msg.id] === 'dislike' ? 'bg-red-100 border-red-400 text-red-600' : 'bg-gray-100 border-gray-300 text-gray-400'} hover:bg-red-50 transition-colors`}
-                onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id] === 'dislike' ? null : 'dislike' }))
-}
-              >
-                <FiThumbsDown size={16} />
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-    {msg.role === "user" && (
-      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-        <FiUser className="text-white text-sm" />
-      </div>
-    )}
-  </div>
-))}
-        <div ref={messagesEndRef} />
-      </div>
-    </div>
-  </div>
 
-  {/* Input Area */}
-  <div className="border-t border-purple-100 bg-white/50 backdrop-blur-sm p-4 md:p-6">
-    <div className="max-w-4xl mx-auto flex gap-3 md:gap-4">
-      <div className="flex-1 relative">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => {
-                setInputValue(e.target.value);
-              }}
-              onKeyDown={(e) => { 
-                if (e.key === "Enter" && !isLoading && (user || !isLimitReached)) {
-                  if (wordCount <= maxWords) {
-                    handleSendMessage(e); 
+          {/* Input Area */}
+          <div className="border-t-4 border-black bg-white p-4 md:p-6 pb-6 md:pb-8">
+            <div className="max-w-4xl mx-auto flex gap-3 md:gap-4">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => {
+                    setInputValue(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (
+                      e.key === "Enter" &&
+                      !isLoading &&
+                      (user || !isLimitReached)
+                    ) {
+                      if (wordCount <= maxWords) {
+                        handleSendMessage(e);
+                      }
+                    }
+                  }}
+                  placeholder={
+                    selectedPersona
+                      ? `Chat with ${selectedPersona.name}...`
+                      : "What's in your mind?..."
                   }
-                }
-              }}
-              placeholder={selectedPersona ? `Chat with ${selectedPersona.name}...` : "What's in your mind?..."
-}
-              disabled={isLoading || (!user && isLimitReached)}
-              className="w-full text-gray-800 border border-purple-200 rounded-2xl px-4 py-3 md:px-6 md:py-4 pr-12 md:pr-14 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 bg-white/80 backdrop-blur-sm shadow-sm placeholder-gray-500"
-            />
-          {/* Show error only if word count exceeds maxWords */}
-          {wordCount > maxWords && (
-            <div className="absolute left-0 -bottom-6 text-xs text-red-600 select-none">
-              Max limit is 300 words
+                  disabled={isLoading || (!user && isLimitReached)}
+                  className="w-full text-black font-medium border-4 border-black bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] px-4 py-3 md:px-6 md:py-4 pr-12 md:pr-14 focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 transition-all placeholder-black/50 placeholder:text-sm"
+                />
+                {wordCount > maxWords && (
+                  <div className="absolute left-0 -bottom-6 text-xs font-black text-red-600  select-none">
+                    Max limit is 300 words
+                  </div>
+                )}
+                <button
+                  onClick={(e) => {
+                    if (wordCount <= maxWords) {
+                      handleSendMessage(e);
+                    }
+                  }}
+                  disabled={
+                    !inputValue.trim() ||
+                    isLoading ||
+                    (!user && isLimitReached) ||
+                    wordCount > maxWords
+                  }
+                  className={`absolute right-2 md:right-3 top-2 w-10 h-10 border-4 border-black flex items-center justify-center transition-all duration-200 ${
+                    inputValue.trim() &&
+                    !isLoading &&
+                    (user || !isLimitReached) &&
+                    wordCount <= maxWords
+                      ? "bg-pink-400 hover:bg-pink-300 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px]"
+                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  }`}
+                >
+                  <FiSend size={16} strokeWidth={3} className="md:text-base" />
+                </button>
+              </div>
             </div>
-          )}
-          <button
-            onClick={(e) => {
-              if (wordCount <= maxWords) {
-                handleSendMessage(e);
-              }
-            }}
-            disabled={!inputValue.trim() || isLoading || (!user && isLimitReached) || wordCount > maxWords}
-            className={`absolute right-2 md:right-3 top-2 w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${
-              inputValue.trim() && !isLoading && (user || !isLimitReached) && wordCount <= maxWords
-                ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105" 
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}
-          >
-            <FiSend size={16} className="md:text-base" />
-          </button>
+
+            {!user && isLimitReached && (
+              <div className="text-center text-black font-black text-sm mt-2 uppercase border-2 border-black bg-yellow-200 p-2">
+                Chat limit reached. Please sign in to continue chatting.
+              </div>
+            )}
+            <p className="text-center text-black/70 font-bold text-xs md:text-sm mt-3 md:mt-4 uppercase">
+              Chhaya Persona can make mistakes. Check important info.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-    
-    {!user && isLimitReached && (
-      <div className="text-center text-amber-600 text-sm mt-2 font-medium">
-        Chat limit reached. Please sign in to continue chatting.
-      </div>
-    )}
-    <p className="text-center text-gray-500 text-xs md:text-sm mt-3 md:mt-4">
-      Chhaya Persona can make mistakes. Consider checking important information.
-    </p>
-  </div>
-</div>
-</div>
-</div>
   );
 };
 

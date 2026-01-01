@@ -1,207 +1,168 @@
-"use client";
 import React from "react";
+import Navbar from "@/component/navbar";
 
-const TermsPage = () => {
+const TermsAndConditions: React.FC = () => {
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-6 max-w-5xl">
+    <div className="min-h-screen bg-yellow-50">
+      <Navbar />
+
+      <main className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12 pt-24 md:pt-28">
         {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-            Terms of Service
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-4xl md:text-6xl font-black text-black uppercase tracking-tighter mb-4">
+            Terms & Conditions
           </h1>
-          <p className="text-gray-600">Last updated: 15/08/2025</p>
+          <div className="inline-block bg-white border-4 border-black px-6 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <p className="text-black font-bold uppercase text-sm">
+              Last updated: August 14, 2025
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-8">
-          {/* Section 1 */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
+        {/* Intro */}
+        <div className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-8 mb-6">
+          <p className="text-black font-medium leading-relaxed">
+            Welcome to Chhaya Persona! By accessing or using our service, you
+            agree to be bound by these Terms and Conditions. Please read them
+            carefully before using our platform.
+          </p>
+        </div>
+
+        {/* Sections */}
+        <div className="space-y-6">
+          <div className="bg-cyan-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
+            <h2 className="text-2xl font-black text-black mb-4 uppercase border-b-4 border-black pb-2">
               1. Acceptance of Terms
             </h2>
-            <p className="mb-4 text-gray-700">
-              By accessing and using our Platform "Chhaya Persona", you
-              accept and agree to be bound by the terms and provisions of this
-              agreement. If you do not agree, please do not use this service.
-            </p>
-            <p className="text-gray-700">
-              These Terms of Service ("Terms") govern your use of our platform,
-              including all content, services, and products available at or
-              through the service.
+            <p className="text-black font-medium bg-white border-2 border-black p-4">
+              By using Chhaya Persona, you acknowledge that you have read,
+              understood, and agree to be bound by these Terms and Conditions.
+              If you do not agree, please do not use our service.
             </p>
           </div>
 
-          {/* Section 2
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              2. Description of Service
+          <div className="bg-pink-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
+            <h2 className="text-2xl font-black text-black mb-4 uppercase border-b-4 border-black pb-2">
+              2. Use of Service
             </h2>
-            <p className="text-gray-700 mb-4">Our AI Interview Platform provides:</p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700">
-              <li>AI-powered mock interview sessions</li>
-              <li>Personalized feedback and performance analytics</li>
-              <li>Industry-specific interview preparation</li>
-              <li>Resume and profile management tools</li>
-              <li>Interview scheduling and recording capabilities</li>
-            </ul>
-            <p className="mt-4 text-gray-700">
-              We reserve the right to modify, suspend, or discontinue the service
-              at any time with or without notice.
-            </p>
-          </div> */}
-
-          {/* Section 3 */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              3. User Accounts and Responsibilities
-            </h2>
-            <p className="text-gray-700 mb-4">
-              To access certain features, you must create an account. You agree to:
-            </p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700">
-              <li>Provide accurate, current, and complete information</li>
-              <li>Maintain account security</li>
-              <li>Notify us of unauthorized access</li>
-              <li>Accept responsibility for all activities</li>
-              <li>Use the service lawfully</li>
+            <ul className="list-none text-black space-y-2 font-medium">
+              <li className="bg-white border-2 border-black px-3 py-2">
+                • You must be at least 13 years old to use this service
+              </li>
+              <li className="bg-white border-2 border-black px-3 py-2">
+                • You are responsible for maintaining account security
+              </li>
+              <li className="bg-white border-2 border-black px-3 py-2">
+                • You may not use the service for illegal purposes
+              </li>
+              <li className="bg-white border-2 border-black px-3 py-2">
+                • AI-generated content is for educational/entertainment only
+              </li>
             </ul>
           </div>
 
-          {/* Section 4 */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              4. Acceptable Use Policy
+          <div className="bg-green-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
+            <h2 className="text-2xl font-black text-black mb-4 uppercase border-b-4 border-black pb-2">
+              3. User Accounts
             </h2>
-            <p className="text-gray-700 mb-4">You agree not to:</p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700">
-              <li>Upload harmful code</li>
-              <li>Attempt unauthorized access</li>
-              <li>Disrupt service or servers</li>
-              <li>Use the service for illegal activities</li>
-              <li>Harass or harm others</li>
-              <li>Share misleading information</li>
-              <li>Violate laws or regulations</li>
+            <p className="text-black font-medium bg-white border-2 border-black p-4 mb-3">
+              You may need to create an account to access certain features. You
+              are responsible for:
+            </p>
+            <ul className="list-none text-black space-y-2 font-medium">
+              <li className="bg-white border-2 border-black px-3 py-2">
+                • Providing accurate registration information
+              </li>
+              <li className="bg-white border-2 border-black px-3 py-2">
+                • Keeping your password secure and confidential
+              </li>
+              <li className="bg-white border-2 border-black px-3 py-2">
+                • All activities that occur under your account
+              </li>
             </ul>
           </div>
 
-          {/* Section 5 */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              5. Intellectual Property Rights
+          <div className="bg-yellow-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
+            <h2 className="text-2xl font-black text-black mb-4 uppercase border-b-4 border-black pb-2">
+              4. AI-Generated Content
             </h2>
-            <p className="mb-4 text-gray-700">
-              The service and its content are owned by us and protected by
+            <div className="bg-white border-2 border-black p-4 space-y-3">
+              <p className="text-black font-medium">
+                <strong className="font-black">IMPORTANT DISCLAIMER:</strong>{" "}
+                All conversations and responses are AI-generated simulations.
+                They do not represent the actual views or statements of the
+                historical figures they portray.
+              </p>
+              <p className="text-black font-medium">
+                Users should verify any information independently and not rely
+                solely on AI-generated content for critical decisions.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-pink-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
+            <h2 className="text-2xl font-black text-black mb-4 uppercase border-b-4 border-black pb-2">
+              5. Intellectual Property
+            </h2>
+            <p className="text-black font-medium bg-white border-2 border-black p-4">
+              All content, features, and functionality of Chhaya Persona are
+              owned by us and protected by copyright, trademark, and other
               intellectual property laws.
             </p>
-            <p className="text-gray-700">
-              You retain ownership of your content but grant us a license to use
-              it for providing the service.
+          </div>
+
+          <div className="bg-cyan-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
+            <h2 className="text-2xl font-black text-black mb-4 uppercase border-b-4 border-black pb-2">
+              6. Termination
+            </h2>
+            <p className="text-black font-medium bg-white border-2 border-black p-4">
+              We reserve the right to terminate or suspend your account at any
+              time for violations of these Terms, without prior notice or
+              liability.
             </p>
           </div>
 
-          {/* Section 6
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              6. Payment and Subscription Terms
+          <div className="bg-green-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
+            <h2 className="text-2xl font-black text-black mb-4 uppercase border-b-4 border-black pb-2">
+              7. Limitation of Liability
             </h2>
-            <ul className="list-disc list-inside space-y-2 text-gray-700">
-              <li>Payment is due in advance</li>
-              <li>Subscriptions auto-renew unless canceled</li>
-              <li>Refunds follow our refund policy</li>
-              <li>Fees may change with 30 days’ notice</li>
-              <li>Accounts may be suspended for non-payment</li>
-            </ul>
-          </div> */}
-
-          {/* Section 7 */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              7. Disclaimer of Warranties
-            </h2>
-            <p className="text-gray-700">
-              The service is provided "as is" without warranties, express or
-              implied.
+            <p className="text-black font-medium bg-white border-2 border-black p-4">
+              Chhaya Persona is provided "as is" without warranties of any kind.
+              We are not liable for any damages arising from your use of the
+              service.
             </p>
           </div>
 
-          {/* Section 8 */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              8. Limitation of Liability
+          <div className="bg-yellow-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
+            <h2 className="text-2xl font-black text-black mb-4 uppercase border-b-4 border-black pb-2">
+              8. Changes to Terms
             </h2>
-            <p className="text-gray-700">
-              We are not liable for indirect, incidental, special, consequential,
-              or punitive damages from using the service.
+            <p className="text-black font-medium bg-white border-2 border-black p-4">
+              We may modify these Terms at any time. Continued use of the
+              service after changes constitutes acceptance of the new Terms.
             </p>
           </div>
 
-          {/* Section 9 */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              9. Termination
+          <div className="bg-pink-200 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
+            <h2 className="text-2xl font-black text-black mb-4 uppercase border-b-4 border-black pb-2">
+              9. Contact Information
             </h2>
-            <p className="mb-4 text-gray-700">
-              We may suspend or terminate your account immediately for any
-              violation of these Terms.
-            </p>
-            <p className="text-gray-700">
-              You may terminate your account anytime via profile settings or by
-              contacting us.
-            </p>
-          </div>
-
-          {/* Section 10 */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-2xl font-bold text-emerald-600 mb-4">
-              10. Contact Information
-            </h2>
-            <p className="mb-4 text-gray-700">
-              If you have any questions about these Terms, contact us:
-            </p>
-            <div className="p-4 bg-gray-50 rounded-lg space-y-2">
-              <p className="font-semibold text-black">Email:</p>
+            <div className="bg-white border-2 border-black p-4">
+              <p className="text-black font-medium mb-3">
+                For questions about these Terms, contact us at:
+              </p>
               <a
                 href="mailto:suprabhat.work@gmail.com"
-                className="text-emerald-500 hover:underline"
+                className="inline-block bg-black text-white font-black uppercase px-6 py-3 border-4 border-black hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
               >
                 suprabhat.work@gmail.com
               </a>
-              <div className="flex gap-4 mt-2">
-                {/* X Icon */}
-                <a
-                  href="https://x.com/Suprabhat_3"
-                  target="_blank"
-                  className="text-gray-400 hover:text-emerald-500"
-                >
-                  <svg
-                    className="h-6 w-6"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
-                  </svg>
-                </a>
-                {/* LinkedIn Icon */}
-                <a
-                  href="https://www.linkedin.com/in/suprabhatt/"
-                  target="_blank"
-                  className="text-gray-400 hover:text-emerald-500"
-                >
-                  <svg
-                    className="h-6 w-6"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
-                  </svg>
-                </a>
-              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </main>
+    </div>
   );
 };
 
-export default TermsPage;
+export default TermsAndConditions;
