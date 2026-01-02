@@ -76,7 +76,7 @@ Remember to embody this persona consistently throughout the conversation.`;
       model: openrouter('cognitivecomputations/dolphin-mistral-24b-venice-edition:free'), 
       messages: allMessages,
       temperature: 0.7,
-      maxOutputTokens: 3000, 
+      maxOutputTokens: 10000, 
     });
 
     // Create a slower streaming response

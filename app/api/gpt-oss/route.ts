@@ -76,7 +76,7 @@ Remember to embody this persona consistently throughout the conversation.`;
       model: groq('openai/gpt-oss-120b'),
       messages: allMessages,
       temperature: 0.7,
-      maxOutputTokens: 3000,
+      maxOutputTokens: 10000,
     });
 
     // Create a slower streaming response

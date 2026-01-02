@@ -43,7 +43,7 @@ interface PersonaData {
   additionalContext: string;
 }
 
-type ModelType = "gemini" | "groq" | "gpt-oss" | "qwen" | "claude";
+type ModelType = "gemini" | "groq" | "gpt-oss" | "mistral" | "claude";
 
 interface ModelOption {
   value: ModelType;
@@ -68,7 +68,7 @@ const modelOptions: ModelOption[] = [
     description: "Good for coding - chinese model hai",
   },
   {
-    value: "qwen",
+    value: "mistral",
     label: "dolphin-mistral",
     description: "Uncensored hai bhai",
   },

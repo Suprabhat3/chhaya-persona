@@ -204,10 +204,10 @@ const Navbar: React.FC = () => {
                   <div className="py-2">
                     <button
                       onClick={handleViewProfile}
-                      className="w-full flex items-center px-4 py-3 text-left text-gray-700 hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center px-4 py-3 text-left text-gray-900 hover:bg-gray-50 transition-colors font-bold "
                     >
                       <svg
-                        className="w-5 h-5 mr-3 text-gray-400"
+                        className="w-5 h-5 mr-3 text-gray-900 font-bold"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -223,10 +223,10 @@ const Navbar: React.FC = () => {
                     </button>
                     <button
                       onClick={handleViewHistory}
-                      className="w-full flex items-center px-4 py-3 text-left text-gray-700 hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center px-4 py-3 text-left text-gray-900 hover:bg-gray-50 transition-colors font-bold"
                     >
                       <svg
-                        className="w-5 h-5 mr-3 text-gray-400"
+                        className="w-5 h-5 mr-3 text-gray-900 font-bold"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -243,10 +243,10 @@ const Navbar: React.FC = () => {
                     <hr className="my-2 border-gray-100" />
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center px-4 py-3 text-left text-red-600 hover:bg-red-50 transition-colors"
+                      className="w-full flex items-center px-4 py-3 text-left text-red-600 hover:bg-red-50 transition-colors font-bold"
                     >
                       <svg
-                        className="w-5 h-5 mr-3 text-red-500"
+                        className="w-5 h-5 mr-3 text-red-500 font-bold"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
