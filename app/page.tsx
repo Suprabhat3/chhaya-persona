@@ -5,6 +5,7 @@ import Footer from "@/component/footer";
 import PersonaCards from "@/component/cardPersona";
 import SupportMyWorkSection from "@/component/supportMyWork";
 import OurProductsSection from "@/component/otherProduct";
+import FeaturedPersonas from "@/component/FeaturedPersonas";
 
 export default function HomePage() {
   return (
@@ -20,7 +21,7 @@ export default function HomePage() {
         </div>
         {/* Personas Section */}
         <div id="personas">
-          <PersonaCards />
+         <FeaturedPersonas />
         </div>
         <div id="support">
           <SupportMyWorkSection />

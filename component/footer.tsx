@@ -151,7 +151,7 @@ const Footer: React.FC = () => {
         <div className="border-t-2 border-black pt-8 flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center space-x-6 mb-4 md:mb-0">
             <p className="text-black font-bold">
-              © 2025 Chhaya Persona. All rights reserved.
+              © 2026 Chhaya Persona. All rights reserved.
             </p>
           </div>
           <div className="flex items-center space-x-6 text-sm text-black font-bold">

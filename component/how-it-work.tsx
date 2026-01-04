@@ -74,11 +74,6 @@ const HowItWorksSection: React.FC = () => {
                   {step.description}
                 </p>
               </div>
-
-              {/* Connector Line (except last item) */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-[48px] left-1/2 w-full h-[4px] bg-black z-[-1] transform translate-x-1/2" />
-              )}
             </div>
           ))}
         </div>
