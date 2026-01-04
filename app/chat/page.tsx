@@ -616,6 +616,15 @@ const ChatApp: React.FC = () => {
     try {
       const apiEndpoint = `/api/${selectedModel}`;
 
+      // Extract user's name from user metadata
+      const userName = user?.user_metadata?.first_name
+        ? `${user.user_metadata.first_name}${
+            user.user_metadata.last_name
+              ? " " + user.user_metadata.last_name
+              : ""
+          }`
+        : undefined;
+
       const response = await fetch(apiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -625,6 +634,7 @@ const ChatApp: React.FC = () => {
             content: m.content,
           })),
           personaKey: selectedPersona.key, // Send only the key instead of full persona object
+          userName, // Send user's name if logged in
         }),
       });
 
@@ -774,7 +784,7 @@ const ChatApp: React.FC = () => {
         <div className="flex-1 flex flex-col min-h-0">
           <div className="flex-1 overflow-y-auto">
             <div className="p-2 md:p-6 w-full min-w-0">
-              <div className="max-w-4xl mx-auto space-y-4 md:space-y-6 w-full min-w-0">
+              <div className="max-w-[98%] md:max-w-[60%] mx-auto space-y-4 md:space-y-6 w-full min-w-0 p-1">
                 {messages.length === 0 && (
                   <div className="text-center mt-10 md:mt-20">
                     <h2 className="text-3xl md:text-5xl font-black text-black uppercase tracking-tighter mb-4">
@@ -823,7 +833,7 @@ const ChatApp: React.FC = () => {
                       </div>
                     )}
                     <div
-                      className={`max-w-[90vw] md:max-w-[85%] px-4 py-3 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
+                      className={`max-w-[80vw] md:max-w-[85%] px-4 py-3 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
                         msg.role === "user"
                           ? "bg-green-400 text-black"
                           : "bg-white text-black"

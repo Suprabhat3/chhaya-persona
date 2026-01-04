@@ -4,7 +4,14 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/component/ProtectedRoute";
 import Navbar from "@/component/navbar";
-import { FiUser, FiMail, FiCalendar } from "react-icons/fi";
+import {
+  FiUser,
+  FiMail,
+  FiCalendar,
+  FiEdit2,
+  FiSave,
+  FiX,
+} from "react-icons/fi";
 
 interface UserProfile {
   first_name: string;
@@ -18,6 +25,14 @@ const ProfilePage: React.FC = () => {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedFirstName, setEditedFirstName] = useState("");
+  const [editedLastName, setEditedLastName] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -52,6 +67,78 @@ const ProfilePage: React.FC = () => {
       return user.email.charAt(0).toUpperCase();
     }
     return "U";
+  };
+
+  const handleEdit = () => {
+    setEditedFirstName(profile?.first_name || "");
+    setEditedLastName(profile?.last_name || "");
+    setIsEditing(true);
+    setSaveMessage(null);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedFirstName("");
+    setEditedLastName("");
+    setSaveMessage(null);
+  };
+
+  const handleSave = async () => {
+    if (!user || !editedFirstName.trim()) {
+      setSaveMessage({ type: "error", text: "First name is required" });
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveMessage(null);
+
+    try {
+      const { supabase } = await import("@/lib/supabase");
+
+      // Update profile in database
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          first_name: editedFirstName.trim(),
+          last_name: editedLastName.trim(),
+        })
+        .eq("id", user.id);
+
+      if (error) throw error;
+
+      // Update user metadata as well (for consistency with chat personalization)
+      await supabase.auth.updateUser({
+        data: {
+          first_name: editedFirstName.trim(),
+          last_name: editedLastName.trim(),
+        },
+      });
+
+      // Update local state
+      setProfile((prev) =>
+        prev
+          ? {
+              ...prev,
+              first_name: editedFirstName.trim(),
+              last_name: editedLastName.trim(),
+            }
+          : null
+      );
+
+      setIsEditing(false);
+      setSaveMessage({ type: "success", text: "Name updated successfully!" });
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSaveMessage(null), 3000);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      setSaveMessage({
+        type: "error",
+        text: "Failed to update name. Please try again.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -96,6 +183,53 @@ const ProfilePage: React.FC = () => {
 
             {/* Profile Information */}
             <div className="space-y-6">
+              {/* Save Message */}
+              {saveMessage && (
+                <div
+                  className={`border-4 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
+                    saveMessage.type === "success"
+                      ? "bg-green-200"
+                      : "bg-red-200"
+                  }`}
+                >
+                  <p className="text-black font-bold text-center">
+                    {saveMessage.text}
+                  </p>
+                </div>
+              )}
+
+              {/* Edit Controls */}
+              {!isEditing ? (
+                <div className="flex justify-end">
+                  <button
+                    onClick={handleEdit}
+                    className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black border-4 border-black px-4 py-2 font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                  >
+                    <FiEdit2 size={16} strokeWidth={3} />
+                    Edit Name
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-3 justify-end">
+                  <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="flex items-center gap-2 bg-green-400 hover:bg-green-300 text-black border-4 border-black px-4 py-2 font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <FiSave size={16} strokeWidth={3} />
+                    {isSaving ? "Saving..." : "Save"}
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    disabled={isSaving}
+                    className="flex items-center gap-2 bg-red-400 hover:bg-red-300 text-black border-4 border-black px-4 py-2 font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <FiX size={16} strokeWidth={3} />
+                    Cancel
+                  </button>
+                </div>
+              )}
+
               {/* First Name */}
               <div className="bg-yellow-100 border-4 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                 <div className="flex items-center gap-3 mb-2">
@@ -106,9 +240,19 @@ const ProfilePage: React.FC = () => {
                     First Name
                   </label>
                 </div>
-                <div className="text-black font-bold text-lg md:text-xl">
-                  {profile?.first_name || "Not set"}
-                </div>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedFirstName}
+                    onChange={(e) => setEditedFirstName(e.target.value)}
+                    className="w-full text-black font-bold text-lg md:text-xl bg-white border-4 border-black px-3 py-2 focus:outline-none focus:ring-4 focus:ring-yellow-400"
+                    placeholder="Enter first name"
+                  />
+                ) : (
+                  <div className="text-black font-bold text-lg md:text-xl">
+                    {profile?.first_name || "Not set"}
+                  </div>
+                )}
               </div>
 
               {/* Last Name */}
@@ -118,12 +262,23 @@ const ProfilePage: React.FC = () => {
                     <FiUser className="text-white" size={18} strokeWidth={3} />
                   </div>
                   <label className="text-xs font-black text-black uppercase tracking-wide">
-                    Last Name
+                    Last Name{" "}
+                    <span className="text-gray-600 font-bold">(Optional)</span>
                   </label>
                 </div>
-                <div className="text-black font-bold text-lg md:text-xl">
-                  {profile?.last_name || "Not set"}
-                </div>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedLastName}
+                    onChange={(e) => setEditedLastName(e.target.value)}
+                    className="w-full text-black font-bold text-lg md:text-xl bg-white border-4 border-black px-3 py-2 focus:outline-none focus:ring-4 focus:ring-cyan-400"
+                    placeholder="Enter last name (optional)"
+                  />
+                ) : (
+                  <div className="text-black font-bold text-lg md:text-xl">
+                    {profile?.last_name || "Not set"}
+                  </div>
+                )}
               </div>
 
               {/* Email */}
