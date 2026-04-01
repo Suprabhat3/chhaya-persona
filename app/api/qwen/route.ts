@@ -117,7 +117,7 @@ Remember to embody this persona consistently throughout the conversation.`;
     const allMessages = [systemMessage, ...messages];
 
     const result = await streamText({
-      model: openrouter('cognitivecomputations/dolphin-mistral-24b-venice-edition:free'), 
+      model: openrouter('qwen/qwen3.6-plus-preview:free'), 
       messages: allMessages,
       temperature: 0.7,
       maxOutputTokens: 10000, 
