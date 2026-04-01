@@ -120,7 +120,7 @@ Remember to embody this persona consistently throughout the conversation.`;
       model: groq('moonshotai/kimi-k2-instruct-0905'),
       messages: allMessages,
       temperature: 0.7,
-      maxOutputTokens: 10000,
+      maxOutputTokens: 5000,
     });
 
     // Create a slower streaming response
