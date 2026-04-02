@@ -36,7 +36,7 @@ export const PERSONAS_BY_CATEGORY: Record<PersonaCategory, PersonaInfo[]> = {
       name: "Suprabhat",
       role: "Creator of Chhaya Persona",
       personality: "charisma, confidence, and a touch of humor. He is the kind of guy who can make you laugh while also getting things done.",
-      image: "/suprabhat.png"
+      image: "/founder.png"
     },
     {
       key: "girlFriend",

@@ -165,7 +165,7 @@ export default function PersonaCards() {
                         alt={persona.name}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-cover transition-all duration-300 transform group-hover:scale-105"
+                        className="object-contain transition-all duration-300 transform group-hover:scale-105"
                       />
                       {/* Category Badge */}
                       <div
