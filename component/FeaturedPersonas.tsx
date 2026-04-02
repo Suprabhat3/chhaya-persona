@@ -72,7 +72,7 @@ export default function FeaturedPersonas() {
                   alt={persona.name}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-all duration-300 transform group-hover:scale-105"
+                  className="object-fill transition-all duration-300 transform group-hover:scale-105"
                 />
               </div>
             )}

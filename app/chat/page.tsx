@@ -16,6 +16,7 @@ import {
 } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { Components } from "react-markdown";
@@ -202,6 +203,64 @@ const CodeBlockWithCopy: React.FC<{
   );
 };
 
+const TableWithCopy: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [copied, setCopied] = useState(false);
+  const tableRef = useRef<HTMLTableElement>(null);
+
+  const copyToClipboard = async () => {
+    try {
+      if (!tableRef.current) return;
+      const rows = Array.from(tableRef.current.querySelectorAll("tr"));
+      const text = rows
+        .map((row) => {
+          const cells = Array.from(row.querySelectorAll("th, td"));
+          return cells.map((cell) => cell.textContent?.trim() || "").join("\t");
+        })
+        .join("\n");
+
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  return (
+    <div className="relative group w-full my-4 max-w-full overflow-hidden border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col bg-white">
+      {/* Header bar */}
+      <div className="flex items-center justify-between bg-yellow-200 border-b-4 border-black px-3 py-2">
+        <div className="flex items-center gap-2">
+          <div className="text-black font-black text-xs uppercase">Data Table</div>
+        </div>
+        <button
+          onClick={copyToClipboard}
+          className="p-1.5 px-2.5 bg-white hover:bg-yellow-100 text-black font-bold border-2 border-black transition-all flex items-center gap-1.5 text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+          title="Copy table data"
+        >
+          {copied ? (
+            <>
+              <FiCheck size={14} strokeWidth={3} className="text-black" />
+              <span className="text-xs font-black uppercase text-black">Copied!</span>
+            </>
+          ) : (
+            <>
+              <FiCopy size={14} strokeWidth={3} className="text-black" />
+              <span className="text-xs font-black uppercase text-black">Copy</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      <div className="w-full overflow-x-auto">
+        <table ref={tableRef} className="w-full text-left border-collapse min-w-max">
+          {children}
+        </table>
+      </div>
+    </div>
+  );
+};
+
 const MarkdownMessage: React.FC<{ content: string; isUser: boolean }> = ({
   content,
   isUser,
@@ -291,11 +350,39 @@ const MarkdownMessage: React.FC<{ content: string; isUser: boolean }> = ({
     strong: ({ children }) => (
       <strong className="font-black text-black">{children}</strong>
     ),
+    table: ({ children }) => <TableWithCopy>{children}</TableWithCopy>,
+    thead: ({ children }) => (
+      <thead className="border-b-4 border-black">
+        {children}
+      </thead>
+    ),
+    tbody: ({ children }) => (
+      <tbody className="bg-white">
+        {children}
+      </tbody>
+    ),
+    tr: ({ children }) => (
+      <tr className="border-b-2 border-black last:border-0 hover:bg-yellow-100 transition-colors">
+        {children}
+      </tr>
+    ),
+    th: ({ children }) => (
+      <th className="p-3 font-black text-black uppercase border-r-2 border-black last:border-r-0 whitespace-nowrap">
+        {children}
+      </th>
+    ),
+    td: ({ children }) => (
+      <td className="p-3 font-medium text-black border-r-2 border-black last:border-r-0">
+        {children}
+      </td>
+    ),
   };
 
   return (
     <div className="prose prose-sm max-w-none overflow-hidden">
-      <ReactMarkdown components={components}>{content}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+        {content}
+      </ReactMarkdown>
     </div>
   );
 };

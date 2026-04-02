@@ -113,35 +113,88 @@ Remember to embody this persona consistently throughout the conversation.`;
       content: baseSystemPrompt
     };
 
-    // Combine system message with user messages
-    const allMessages = [systemMessage, ...messages];
+    // Combine system message with recent user messages to avoid 'Request Entity Too Large'
+    // Keep only the last 10 messages from the conversation history
+    const recentMessages = messages.slice(-10);
+    const allMessages = [systemMessage, ...recentMessages];
 
     const result = await streamText({
-      model: groq('groq/compound'),
+      model: groq('groq/compound-mini'),
       messages: allMessages,
       temperature: 0.7,
-      maxOutputTokens: 5000,
+      maxOutputTokens: 2000,
     });
 
-    // Create a slower streaming response
+    // Create a slower streaming response that filters out <think> tags
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
         const reader = result.textStream.getReader();
+        let buffer = '';
+        let inThinkTag = false;
         
         try {
           while (true) {
             const { done, value } = await reader.read();
             
             if (done) {
+              if (!inThinkTag && buffer.length > 0) {
+                controller.enqueue(encoder.encode(buffer));
+              }
               controller.close();
               break;
             }
             
-            // Add delay to slow down the stream
-            await new Promise(resolve => setTimeout(resolve, 50)); // 50ms delay per chunk
+            buffer += value;
             
-            controller.enqueue(encoder.encode(value));
+            while (buffer.length > 0) {
+              if (inThinkTag) {
+                const endIdx = buffer.indexOf('</think>');
+                if (endIdx !== -1) {
+                  inThinkTag = false;
+                  buffer = buffer.slice(endIdx + 8).replace(/^[\r\n]+/, '');
+                } else {
+                  break; // Wait for more data
+                }
+              } else {
+                const startIdx = buffer.indexOf('<think>');
+                if (startIdx !== -1) {
+                  const toOutput = buffer.slice(0, startIdx);
+                  if (toOutput) {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    controller.enqueue(encoder.encode(toOutput));
+                  }
+                  inThinkTag = true;
+                  buffer = buffer.slice(startIdx + 7);
+                } else {
+                  // Check if buffer ends with a partial '<think>'
+                  let holdBackIdx = -1;
+                  for (let i = Math.max(0, buffer.length - 6); i < buffer.length; i++) {
+                    if (buffer[i] === '<') {
+                      const partial = buffer.slice(i);
+                      if ('<think>'.startsWith(partial)) {
+                        holdBackIdx = i;
+                        break;
+                      }
+                    }
+                  }
+                  
+                  if (holdBackIdx !== -1) {
+                    const toOutput = buffer.slice(0, holdBackIdx);
+                    if (toOutput) {
+                      await new Promise(resolve => setTimeout(resolve, 50));
+                      controller.enqueue(encoder.encode(toOutput));
+                    }
+                    buffer = buffer.slice(holdBackIdx);
+                    break; // Wait for more data
+                  } else {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    controller.enqueue(encoder.encode(buffer));
+                    buffer = '';
+                  }
+                }
+              }
+            }
           }
         } catch (error) {
           controller.error(error);
