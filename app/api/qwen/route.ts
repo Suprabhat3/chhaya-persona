@@ -117,10 +117,10 @@ Remember to embody this persona consistently throughout the conversation.`;
     const allMessages = [systemMessage, ...messages];
 
     const result = await streamText({
-      model: openrouter('qwen/qwen3.6-plus-preview:free'), 
+      model: openrouter("arcee-ai/trinity-large-preview:free"), 
       messages: allMessages,
       temperature: 0.7,
-      maxOutputTokens: 10000, 
+      maxOutputTokens: 3000, 
     });
 
     // Create a slower streaming response

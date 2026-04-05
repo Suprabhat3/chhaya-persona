@@ -112,8 +112,8 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
       {user && (
         <>
-          <div className="flex-1 min-h-0 p-4 md:p-6 overflow-hidden">
-            <div className="flex justify-between items-center mb-4">
+          <div className="flex-1 min-h-0 p-4 md:p-6 flex flex-col overflow-hidden">
+            <div className="flex justify-between items-center mb-4 flex-shrink-0">
               <div className="flex items-center gap-2">
                 <FiMessageSquare className="text-black" strokeWidth={3} />
                 <p className="text-black font-black text-sm">
@@ -121,7 +121,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 </p>
               </div>
             </div>
-            <div className="overflow-y-auto flex-1 min-h-0 max-h-[50vh] space-y-2">
+            <div className="overflow-y-auto flex-1 min-h-0 space-y-2">
               {conversations
                 .filter(
                   (c) =>
@@ -209,9 +209,9 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         <div
           className={`md:hidden fixed inset-y-0 left-0 z-40 w-[90vw] max-w-sm transform ${
             isOpen ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 ease-in-out bg-yellow-50 border-r-4 border-black`}
+          } transition-transform duration-300 ease-in-out bg-yellow-50 border-r-4 border-black flex flex-col h-full overflow-hidden`}
         >
-          <div className="p-4 flex items-center justify-between border-b-4 border-black bg-white">
+          <div className="p-4 flex items-center justify-between border-b-4 border-black bg-white flex-shrink-0">
             <h2 className="font-black text-black uppercase">Menu</h2>
             <button
               onClick={onClose}
@@ -221,7 +221,9 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
               <FiX size={20} strokeWidth={3} />
             </button>
           </div>
-          {sidebarContent}
+          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
+            {sidebarContent}
+          </div>
         </div>
         {isOpen && (
           <div

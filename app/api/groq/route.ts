@@ -122,7 +122,7 @@ Remember to embody this persona consistently throughout the conversation.`;
       model: groq('groq/compound-mini'),
       messages: allMessages,
       temperature: 0.7,
-      maxOutputTokens: 2000,
+      maxOutputTokens: 3000,
     });
 
     // Create a slower streaming response that filters out <think> tags

@@ -70,12 +70,12 @@ const modelOptions: ModelOption[] = [
   },
   {
     value: "qwen",
-    label: "Qwen 3.6 plus",
-    description: "Chinese GPT(little bit slow)",
+    label: "arcee-ai",
+    description: "It can play roles",
   },
   {
     value: "claude",
-    label: "Claude-sonnet-4",
+    label: "Claude-opus-4.6",
     description: "Name toh suna hoga",
   },
 ];
