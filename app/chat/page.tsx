@@ -44,7 +44,7 @@ interface PersonaData {
   additionalContext: string;
 }
 
-type ModelType = "gemini" | "groq" | "gpt-oss" | "qwen" | "claude";
+type ModelType = "gpt" | "gemini" | "groq" | "gpt-oss" | "qwen" | "claude";
 
 interface ModelOption {
   value: ModelType;
@@ -54,8 +54,13 @@ interface ModelOption {
 
 const modelOptions: ModelOption[] = [
   {
+    value: "gpt",
+    label: "Chat GPT 5.5",
+    description: "Open AI's model",
+  },
+  {
     value: "gpt-oss",
-    label: "Chat GPT",
+    label: "Chat GPT-oss",
     description: "Open AI's model",
   },
   {

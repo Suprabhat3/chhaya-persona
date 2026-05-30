@@ -69,7 +69,7 @@ Remember to embody this persona consistently throughout the conversation.`;
     const allMessages = [systemMessage, ...messages];
 
     const result = await streamText({
-      model: openai('gpt-4o-mini'),
+      model: openai('gpt-5.4-mini'),
       messages: allMessages,
       temperature: 0.5,
     });
